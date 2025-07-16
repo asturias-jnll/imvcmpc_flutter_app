@@ -95,17 +95,12 @@ class _MemberDataScreenState extends State<MemberDataScreen> {
     // ... (same as before, omitted for brevity)
   }
 
-  void _showSuccessDialog(String message) {
-    // ... (same as before, omitted for brevity)
-  }
-
   void _confirmDeleteMember(int index) {
     // ... (same as before, omitted for brevity)
   }
 
   @override
   Widget build(BuildContext context) {
-    final isWide = MediaQuery.of(context).size.width > 900;
     final isMobile = MediaQuery.of(context).size.width < 600;
     return Stack(
       children: [
