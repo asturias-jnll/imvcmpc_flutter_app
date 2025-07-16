@@ -17,74 +17,133 @@ class DashboardScreen extends StatelessWidget {
         final isMobile = constraints.maxWidth < 600;
         return SingleChildScrollView(
           padding: EdgeInsets.symmetric(
-            horizontal: isMobile ? 16 : 40,
+            horizontal: isMobile ? 0 : 40,
             vertical: 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top bar with white background
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+              // Top bar for finance (match ReportsScreen)
+              if (isMobile)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 0,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                  ],
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    margin: const EdgeInsets.only(
+                      bottom: 18,
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                    ),
+                    child: const Row(children: [Spacer(), UserProfileBar()]),
+                  ),
                 ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 16 : 28,
-                  vertical: 16,
-                ),
-                margin: const EdgeInsets.only(bottom: 24),
-                child: isMobile
-                    ? Column(
-                        children: [
-                          const UserProfileBar(),
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              FilterButton(
-                                label: 'Filters',
-                                options: const [
-                                  'BRANCH',
-                                  'SAVINGS',
-                                  'DISBURSEMENT',
-                                  'MONTHLY',
-                                  'ANNUALLY',
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                    : Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                FilterButton(
-                                  label: 'Filters',
-                                  options: const [
-                                    'BRANCH',
-                                    'SAVINGS',
-                                    'DISBURSEMENT',
-                                    'MONTHLY',
-                                    'ANNUALLY',
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          const UserProfileBar(),
+              if (isMobile)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Dashboard title + AI Recommendation
+                      const Text(
+                        'Dashboard',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF0B5E1C),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      const Text(
+                        'Welcome back!',
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                      ),
+                      SizedBox(height: 18),
+                      const AIRecommendationCard(),
+                      SizedBox(height: 24),
+                      // Charts
+                      const ChartCard(
+                        title: 'Monthly\nSavings per Branch',
+                        barHeights: [
+                          80,
+                          110,
+                          70,
+                          100,
+                          120,
+                          90,
+                          115,
+                          85,
+                          105,
+                          75,
                         ],
                       ),
-              ),
+                      SizedBox(height: 18),
+                      const ChartCard(
+                        title: 'Monthly\nDisbursements per Branch',
+                        barHeights: [
+                          60,
+                          90,
+                          80,
+                          110,
+                          70,
+                          100,
+                          120,
+                          90,
+                          115,
+                          85,
+                        ],
+                      ),
+                      SizedBox(height: 18),
+                      const ChartCard(
+                        title: 'Annual\nSavings per Branch',
+                        isLine: true,
+                      ),
+                      SizedBox(height: 32),
+                      // Contributors and Branches
+                      const TopContributorsCard(),
+                      SizedBox(height: 18),
+                      const TopBranchesCard(),
+                    ],
+                  ),
+                ),
+              if (!isMobile)
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 16,
+                  ),
+                  margin: const EdgeInsets.only(bottom: 24),
+                  child: const Row(children: [Spacer(), UserProfileBar()]),
+                ),
               // Dashboard title + AI Recommendation
               isWide
                   ? Row(
@@ -254,4 +313,4 @@ class DashboardScreen extends StatelessWidget {
       },
     );
   }
-} 
+}

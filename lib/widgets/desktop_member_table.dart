@@ -207,4 +207,4 @@ class DesktopMemberTable extends StatelessWidget {
       ],
     );
   }
-} 
+}

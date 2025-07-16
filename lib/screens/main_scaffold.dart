@@ -148,9 +148,39 @@ class _MainScaffoldState extends State<MainScaffold> {
                             'Logout',
                             style: TextStyle(color: Colors.white70),
                           ),
-                          onTap: () {
+                          onTap: () async {
                             Navigator.pop(context);
-                            Navigator.of(context).pushReplacementNamed('/login');
+                            final shouldLogout = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Confirm Logout'),
+                                content: const Text(
+                                  'Are you sure you want to log out?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: const Text(
+                                      'Logout',
+                                      style: TextStyle(
+                                        color: Color(0xFF0B5E1C),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (shouldLogout == true) {
+                              Navigator.of(
+                                context,
+                              ).pushReplacementNamed('/login');
+                            }
                           },
                         ),
                         const Spacer(),
@@ -163,4 +193,4 @@ class _MainScaffoldState extends State<MainScaffold> {
       },
     );
   }
-} 
+}

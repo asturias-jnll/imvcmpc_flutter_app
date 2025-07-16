@@ -21,99 +21,114 @@ class AnalyticsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top bar with white background
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+              if (isMobile) ...[
+                // Appbar
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  margin: const EdgeInsets.only(bottom: 18),
+                  child: const Row(children: [Spacer(), UserProfileBar()]),
+                ),
+                // Filters in a Row
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 44,
+                        child: FilterButton(
+                          label: 'Filter by Branch',
+                          options: [for (int i = 1; i <= 12; i++) 'BRANCH $i'],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: SizedBox(
+                        height: 44,
+                        child: FilterButton(
+                          label: 'Filter by Month',
+                          options: const [
+                            'JANUARY',
+                            'FEBRUARY',
+                            'MARCH',
+                            'APRIL',
+                            'MAY',
+                            'JUNE',
+                            'JULY',
+                            'AUGUST',
+                            'SEPTEMBER',
+                            'OCTOBER',
+                            'NOVEMBER',
+                            'DECEMBER',
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 16 : 28,
-                  vertical: 16,
-                ),
-                margin: const EdgeInsets.only(bottom: 24),
-                child: isMobile
-                    ? Column(
-                        children: [
-                          const UserProfileBar(),
-                          const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              FilterButton(
-                                label: 'Filter by Branch',
-                                options: [
-                                  for (int i = 1; i <= 12; i++) 'BRANCH $i',
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              FilterButton(
-                                label: 'Filter by Month',
-                                options: const [
-                                  'JANUARY',
-                                  'FEBRUARY',
-                                  'MARCH',
-                                  'APRIL',
-                                  'MAY',
-                                  'JUNE',
-                                  'JULY',
-                                  'AUGUST',
-                                  'SEPTEMBER',
-                                  'OCTOBER',
-                                  'NOVEMBER',
-                                  'DECEMBER',
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                    : Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              FilterButton(
-                                label: 'Filter by Branch',
-                                options: [
-                                  for (int i = 1; i <= 12; i++) 'BRANCH $i',
-                                ],
-                              ),
-                              const SizedBox(width: 12),
-                              FilterButton(
-                                label: 'Filter by Month',
-                                options: const [
-                                  'JANUARY',
-                                  'FEBRUARY',
-                                  'MARCH',
-                                  'APRIL',
-                                  'MAY',
-                                  'JUNE',
-                                  'JULY',
-                                  'AUGUST',
-                                  'SEPTEMBER',
-                                  'OCTOBER',
-                                  'NOVEMBER',
-                                  'DECEMBER',
-                                ],
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          const UserProfileBar(),
+                const SizedBox(height: 18),
+              ],
+              if (!isMobile)
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 16,
+                  ),
+                  margin: const EdgeInsets.only(bottom: 24),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      FilterButton(
+                        label: 'Filter by Branch',
+                        options: [for (int i = 1; i <= 12; i++) 'BRANCH $i'],
+                      ),
+                      const SizedBox(width: 10),
+                      FilterButton(
+                        label: 'Filter by Month',
+                        options: const [
+                          'JANUARY',
+                          'FEBRUARY',
+                          'MARCH',
+                          'APRIL',
+                          'MAY',
+                          'JUNE',
+                          'JULY',
+                          'AUGUST',
+                          'SEPTEMBER',
+                          'OCTOBER',
+                          'NOVEMBER',
+                          'DECEMBER',
                         ],
                       ),
-              ),
+                      const Spacer(),
+                      const UserProfileBar(),
+                    ],
+                  ),
+                ),
               // AI Recommendation
               const AIRecommendationCard(),
               const SizedBox(height: 24),
@@ -236,4 +251,4 @@ class AnalyticsScreen extends StatelessWidget {
       },
     );
   }
-} 
+}

@@ -68,12 +68,16 @@ class MobileMemberList extends StatelessWidget {
                       ),
                       IconButton(
                         icon: const Icon(Icons.edit, color: Color(0xFF0B5E1C)),
-                        onPressed: onEdit != null ? () => onEdit!(c, idx) : null,
+                        onPressed: onEdit != null
+                            ? () => onEdit!(c, idx)
+                            : null,
                         tooltip: 'Edit',
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: onDelete != null ? () => onDelete!(idx) : null,
+                        onPressed: onDelete != null
+                            ? () => onDelete!(idx)
+                            : null,
                         tooltip: 'Delete',
                       ),
                     ],
@@ -118,4 +122,4 @@ class MobileMemberList extends StatelessWidget {
       ],
     );
   }
-} 
+}
