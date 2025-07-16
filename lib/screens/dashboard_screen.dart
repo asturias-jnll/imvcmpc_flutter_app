@@ -145,168 +145,100 @@ class DashboardScreen extends StatelessWidget {
                   child: const Row(children: [Spacer(), UserProfileBar()]),
                 ),
               // Dashboard title + AI Recommendation
-              isWide
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                'Dashboard',
-                                style: TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF0B5E1C),
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Welcome back!',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
+              if (isWide)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            'Dashboard',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF0B5E1C),
+                              letterSpacing: 0.5,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 24),
-                        const Expanded(flex: 3, child: AIRecommendationCard()),
-                      ],
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          'Dashboard',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF0B5E1C),
-                            letterSpacing: 0.5,
+                          SizedBox(height: 4),
+                          Text(
+                            'Welcome back!',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black54,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Welcome back!',
-                          style: TextStyle(fontSize: 16, color: Colors.black54),
-                        ),
-                        SizedBox(height: 18),
-                        AIRecommendationCard(),
-                      ],
+                        ],
+                      ),
                     ),
-              const SizedBox(height: 24),
-              // Charts Row
-              isWide
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: ChartCard(
-                            title: 'Monthly\nSavings per Branch',
-                            barHeights: [
-                              80,
-                              110,
-                              70,
-                              100,
-                              120,
-                              90,
-                              115,
-                              85,
-                              105,
-                              75,
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 18),
-                        Expanded(
-                          child: ChartCard(
-                            title: 'Monthly\nDisbursements per Branch',
-                            barHeights: [
-                              60,
-                              90,
-                              80,
-                              110,
-                              70,
-                              100,
-                              120,
-                              90,
-                              115,
-                              85,
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 18),
-                        const Expanded(
-                          child: ChartCard(
-                            title: 'Annual\nSavings per Branch',
-                            isLine: true,
-                          ),
-                        ),
-                      ],
-                    )
-                  : Column(
-                      children: const [
-                        ChartCard(
-                          title: 'Monthly\nSavings per Branch',
-                          barHeights: [
-                            80,
-                            110,
-                            70,
-                            100,
-                            120,
-                            90,
-                            115,
-                            85,
-                            105,
-                            75,
-                          ],
-                        ),
-                        SizedBox(height: 18),
-                        ChartCard(
-                          title: 'Monthly\nDisbursements per Branch',
-                          barHeights: [
-                            60,
-                            90,
-                            80,
-                            110,
-                            70,
-                            100,
-                            120,
-                            90,
-                            115,
-                            85,
-                          ],
-                        ),
-                        SizedBox(height: 18),
-                        ChartCard(
-                          title: 'Annual\nSavings per Branch',
-                          isLine: true,
-                        ),
-                      ],
+                    const SizedBox(width: 24),
+                    const Expanded(flex: 3, child: AIRecommendationCard()),
+                  ],
+                ),
+              if (isWide) ...[
+                const SizedBox(height: 24),
+                // Charts Row
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: ChartCard(
+                        title: 'Monthly\nSavings per Branch',
+                        barHeights: [
+                          80,
+                          110,
+                          70,
+                          100,
+                          120,
+                          90,
+                          115,
+                          85,
+                          105,
+                          75,
+                        ],
+                      ),
                     ),
-              const SizedBox(height: 32),
-              // Contributors and Branches
-              isWide
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Expanded(child: TopContributorsCard()),
-                        SizedBox(width: 18),
-                        SizedBox(width: 340, child: TopBranchesCard()),
-                      ],
-                    )
-                  : Column(
-                      children: const [
-                        TopContributorsCard(),
-                        SizedBox(height: 18),
-                        TopBranchesCard(),
-                      ],
+                    const SizedBox(width: 18),
+                    Expanded(
+                      child: ChartCard(
+                        title: 'Monthly\nDisbursements per Branch',
+                        barHeights: [
+                          60,
+                          90,
+                          80,
+                          110,
+                          70,
+                          100,
+                          120,
+                          90,
+                          115,
+                          85,
+                        ],
+                      ),
                     ),
+                    const SizedBox(width: 18),
+                    const Expanded(
+                      child: ChartCard(
+                        title: 'Annual\nSavings per Branch',
+                        isLine: true,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
+                // Contributors and Branches
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Expanded(child: TopContributorsCard()),
+                    SizedBox(width: 18),
+                    SizedBox(width: 340, child: TopBranchesCard()),
+                  ],
+                ),
+              ],
             ],
           ),
         );

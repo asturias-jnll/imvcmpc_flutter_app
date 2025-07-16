@@ -28,6 +28,21 @@ class _MainScaffoldState extends State<MainScaffold> {
     });
   }
 
+  Widget _getMobileScreen(int index) {
+    switch (index) {
+      case 0:
+        return const DashboardScreen(key: ValueKey('dashboard'));
+      case 1:
+        return const MemberDataScreen(key: ValueKey('memberdata'));
+      case 2:
+        return const AnalyticsScreen(key: ValueKey('analytics'));
+      case 3:
+        return const ReportsScreen(key: ValueKey('reports'));
+      default:
+        return const DashboardScreen(key: ValueKey('dashboard'));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -71,14 +86,22 @@ class _MainScaffoldState extends State<MainScaffold> {
                     ),
                   ],
                 )
-              : IndexedStack(
-                  index: _selectedIndex,
-                  children: const [
-                    DashboardScreen(),
-                    MemberDataScreen(),
-                    AnalyticsScreen(),
-                    ReportsScreen(),
-                  ],
+              : AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 400),
+                  transitionBuilder: (child, animation) {
+                    final offsetAnimation = Tween<Offset>(
+                      begin: const Offset(0.1, 0),
+                      end: Offset.zero,
+                    ).animate(animation);
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: _getMobileScreen(_selectedIndex),
                 ),
           bottomNavigationBar: isWide
               ? null
@@ -153,30 +176,129 @@ class _MainScaffoldState extends State<MainScaffold> {
                             final shouldLogout = await showDialog<bool>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                title: const Text('Confirm Logout'),
-                                content: const Text(
-                                  'Are you sure you want to log out?',
+                                backgroundColor: const Color(0xFFE9EEF3),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
+                                titlePadding: const EdgeInsets.only(top: 32),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 8,
+                                ),
+                                actionsPadding: const EdgeInsets.only(
+                                  bottom: 20,
+                                  right: 16,
+                                  left: 16,
+                                ),
+                                title: Column(
+                                  children: const [
+                                    Icon(
+                                      Icons.logout,
+                                      size: 48,
+                                      color: Color(0xFF0B5E1C),
+                                    ),
+                                    SizedBox(height: 16),
+                                    Text(
+                                      'Log Out?',
+                                      style: TextStyle(
+                                        color: Color(0xFF0B5E1C),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 22,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                content: const Text(
+                                  'Are you sure you want to log out of your account?',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                actionsAlignment: MainAxisAlignment.center,
                                 actions: [
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.of(context).pop(false),
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(true),
-                                    child: const Text(
-                                      'Logout',
-                                      style: TextStyle(
-                                        color: Color(0xFF0B5E1C),
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: const Color(0xFF0B5E1C),
+                                      textStyle: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 10,
                                       ),
                                     ),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF0B5E1C),
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 28,
+                                        vertical: 12,
+                                      ),
+                                      textStyle: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: const Text('Log Out'),
                                   ),
                                 ],
                               ),
                             );
                             if (shouldLogout == true) {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => AlertDialog(
+                                  backgroundColor: const Color(0xFFE9EEF3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                  ),
+                                  content: SizedBox(
+                                    width: 240,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: const [
+                                        SizedBox(height: 8),
+                                        CircularProgressIndicator(
+                                          color: Color(0xFF0B5E1C),
+                                          strokeWidth: 3,
+                                        ),
+                                        SizedBox(height: 24),
+                                        Text(
+                                          'Logging out... Please wait',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Color(0xFF0B5E1C),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                              await Future.delayed(const Duration(seconds: 1));
+                              if (Navigator.of(
+                                context,
+                                rootNavigator: true,
+                              ).canPop()) {
+                                Navigator.of(
+                                  context,
+                                  rootNavigator: true,
+                                ).pop();
+                              }
                               Navigator.of(
                                 context,
                               ).pushReplacementNamed('/login');

@@ -14,6 +14,7 @@ class IMVCMPCDashboardApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFE9EEF3),
       ),
       home: const LoginScreen(),
+      routes: {'/login': (context) => const LoginScreen()},
     );
   }
-} 
+}
