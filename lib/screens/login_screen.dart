@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 18),
                   const Text(
-                    'Logging in as Finance Officer...',
+                    'Logging in as Marketing Clerk...',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color(0xFF0B5E1C),
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await Future.delayed(const Duration(seconds: 2));
       // Fake check: username must be 'finance' and password 'password123'
       bool success =
-          _usernameController.text.trim() == 'finance' &&
+          _usernameController.text.trim() == 'marketing.clerk' &&
           _passwordController.text == 'password123';
       if (mounted) {
         Navigator.of(context, rootNavigator: true).pop(); // Close dialog
@@ -258,7 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   decoration: InputDecoration(
                                     filled: true,
                                     fillColor: Colors.grey[50],
-                                    hintText: 'e.g. finance.officer',
+                                    hintText: 'e.g. marketing.clerk',
                                     contentPadding: const EdgeInsets.symmetric(
                                       horizontal: 16,
                                       vertical: 12,
@@ -448,7 +448,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 18),
                           const Text(
-                            'Login as',
+                            'Login as Marketing Clerk',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Color(0xFF0B5E1C),
@@ -483,7 +483,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.grey[50],
-                              hintText: 'e.g. finance.officer',
+                              hintText: 'e.g. marketing.clerk',
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: 12,
@@ -614,4 +614,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-} 
+}

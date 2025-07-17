@@ -11,6 +11,7 @@ class MemberFormDialog extends StatefulWidget {
 }
 
 class _MemberFormDialogState extends State<MemberFormDialog> {
+  final _formKey = GlobalKey<FormState>();
   late TextEditingController nameController;
   late TextEditingController savingsController;
   late TextEditingController disbursementController;
@@ -90,233 +91,276 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
           maxWidth: MediaQuery.of(context).size.width > 900 ? 520 : 400,
         ),
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0B5E1C),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    widget.isEdit ? 'Edit Member' : 'Add Member',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      letterSpacing: 1,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF0B5E1C),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      widget.isEdit ? 'Edit Member' : 'Add Member',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        letterSpacing: 1,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 18),
-              // Name
-              TextField(
-                controller: nameController,
-                enabled: !widget.isEdit,
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  filled: true,
-                  fillColor: widget.isEdit ? Colors.grey[100] : Colors.white,
-                  labelStyle: TextStyle(
+                const SizedBox(height: 18),
+                // Name
+                TextFormField(
+                  controller: nameController,
+                  enabled: !widget.isEdit,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    filled: true,
+                    fillColor: widget.isEdit ? Colors.grey[100] : Colors.white,
+                    labelStyle: TextStyle(
+                      color: widget.isEdit
+                          ? Colors.grey
+                          : const Color(0xFF0B5E1C),
+                      fontStyle: widget.isEdit
+                          ? FontStyle.italic
+                          : FontStyle.normal,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF0B5E1C),
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                  cursorColor: const Color(0xFF0B5E1C),
+                  style: TextStyle(
                     color: widget.isEdit
                         ? Colors.grey
                         : const Color(0xFF0B5E1C),
-                    fontStyle: widget.isEdit
-                        ? FontStyle.italic
-                        : FontStyle.normal,
                     fontWeight: FontWeight.normal,
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
-                  ),
-                  disabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF0B5E1C),
-                      width: 2.0,
-                    ),
-                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Name is required';
+                    }
+                    return null;
+                  },
                 ),
-                cursorColor: const Color(0xFF0B5E1C),
-                style: TextStyle(
-                  color: widget.isEdit ? Colors.grey : const Color(0xFF0B5E1C),
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              const SizedBox(height: 12),
-              // Branch Dropdown (add only)
-              widget.isEdit
-                  ? TextField(
-                      enabled: false,
-                      controller: TextEditingController(text: selectedBranch),
-                      decoration: InputDecoration(
-                        labelText: 'Branch',
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        labelStyle: const TextStyle(
+                const SizedBox(height: 12),
+                // Branch Dropdown (add only)
+                widget.isEdit
+                    ? TextField(
+                        enabled: false,
+                        controller: TextEditingController(text: selectedBranch),
+                        decoration: InputDecoration(
+                          labelText: 'Branch',
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                          labelStyle: const TextStyle(
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF0B5E1C),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF0B5E1C),
+                              width: 2.0,
+                            ),
+                          ),
+                        ),
+                        cursorColor: const Color(0xFF0B5E1C),
+                        style: const TextStyle(
                           color: Colors.grey,
-                          fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.normal,
                         ),
-                        disabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF0B5E1C),
+                      )
+                    : DropdownButtonFormField<String>(
+                        value: selectedBranch,
+                        items: branches
+                            .map(
+                              (b) => DropdownMenuItem(value: b, child: Text(b)),
+                            )
+                            .toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            selectedBranch = val!;
+                            updateLocation(selectedBranch);
+                          });
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Branch',
+                          filled: true,
+                          fillColor: Colors.white,
+                          labelStyle: const TextStyle(color: Color(0xFF0B5E1C)),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF0B5E1C),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF0B5E1C),
+                              width: 2.0,
+                            ),
                           ),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF0B5E1C),
-                            width: 2.0,
-                          ),
-                        ),
+                        dropdownColor: Colors.white,
+                        style: const TextStyle(color: Color(0xFF0B5E1C)),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Branch is required';
+                          }
+                          return null;
+                        },
                       ),
-                      cursorColor: const Color(0xFF0B5E1C),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    )
-                  : DropdownButtonFormField<String>(
-                      value: selectedBranch,
-                      items: branches
-                          .map(
-                            (b) => DropdownMenuItem(value: b, child: Text(b)),
-                          )
-                          .toList(),
-                      onChanged: (val) {
-                        setState(() {
-                          selectedBranch = val!;
-                          updateLocation(selectedBranch);
-                        });
-                      },
-                      decoration: InputDecoration(
-                        labelText: 'Branch',
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelStyle: const TextStyle(color: Color(0xFF0B5E1C)),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF0B5E1C),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF0B5E1C),
-                            width: 2.0,
-                          ),
-                        ),
-                      ),
-                      dropdownColor: Colors.white,
-                      style: const TextStyle(color: Color(0xFF0B5E1C)),
+                const SizedBox(height: 12),
+                // Location (auto, not editable)
+                TextField(
+                  enabled: false,
+                  controller: TextEditingController(text: selectedLocation),
+                  decoration: InputDecoration(
+                    labelText: 'Location',
+                    filled: true,
+                    fillColor: Colors.grey[100],
+                    labelStyle: const TextStyle(
+                      color: Colors.grey,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.normal,
                     ),
-              const SizedBox(height: 12),
-              // Location (auto, not editable)
-              TextField(
-                enabled: false,
-                controller: TextEditingController(text: selectedLocation),
-                decoration: InputDecoration(
-                  labelText: 'Location',
-                  filled: true,
-                  fillColor: Colors.grey[100],
-                  labelStyle: const TextStyle(
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF0B5E1C),
+                        width: 2.0,
+                      ),
+                    ),
+                  ),
+                  cursorColor: const Color(0xFF0B5E1C),
+                  style: const TextStyle(
                     color: Colors.grey,
-                    fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.normal,
                   ),
-                  disabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(
+                ),
+                const SizedBox(height: 12),
+                // Savings
+                TextFormField(
+                  controller: savingsController,
+                  decoration: InputDecoration(
+                    labelText: 'Savings',
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelStyle: const TextStyle(
                       color: Color(0xFF0B5E1C),
-                      width: 2.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF0B5E1C),
+                        width: 2.0,
+                      ),
                     ),
                   ),
-                ),
-                cursorColor: const Color(0xFF0B5E1C),
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              const SizedBox(height: 12),
-              // Savings
-              TextField(
-                controller: savingsController,
-                decoration: InputDecoration(
-                  labelText: 'Savings',
-                  filled: true,
-                  fillColor: Colors.white,
-                  labelStyle: const TextStyle(
+                  cursorColor: const Color(0xFF0B5E1C),
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(
                     color: Color(0xFF0B5E1C),
                     fontWeight: FontWeight.bold,
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Savings is required';
+                    }
+                    final num? val = num.tryParse(value.trim());
+                    if (val == null) {
+                      return 'Enter a valid number';
+                    }
+                    if (val < 0) {
+                      return 'Savings cannot be negative';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                // Disbursement
+                TextFormField(
+                  controller: disbursementController,
+                  decoration: InputDecoration(
+                    labelText: 'Disbursement',
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelStyle: const TextStyle(
                       color: Color(0xFF0B5E1C),
-                      width: 2.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF0B5E1C),
+                        width: 2.0,
+                      ),
                     ),
                   ),
-                ),
-                cursorColor: const Color(0xFF0B5E1C),
-                keyboardType: TextInputType.number,
-                style: const TextStyle(
-                  color: Color(0xFF0B5E1C),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 12),
-              // Disbursement
-              TextField(
-                controller: disbursementController,
-                decoration: InputDecoration(
-                  labelText: 'Disbursement',
-                  filled: true,
-                  fillColor: Colors.white,
-                  labelStyle: const TextStyle(
+                  cursorColor: const Color(0xFF0B5E1C),
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(
                     color: Color(0xFF0B5E1C),
                     fontWeight: FontWeight.bold,
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(
-                      color: Color(0xFF0B5E1C),
-                      width: 2.0,
-                    ),
-                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Disbursement is required';
+                    }
+                    final num? val = num.tryParse(value.trim());
+                    if (val == null) {
+                      return 'Enter a valid number';
+                    }
+                    if (val < 0) {
+                      return 'Disbursement cannot be negative';
+                    }
+                    return null;
+                  },
                 ),
-                cursorColor: const Color(0xFF0B5E1C),
-                keyboardType: TextInputType.number,
-                style: const TextStyle(
-                  color: Color(0xFF0B5E1C),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -338,16 +382,19 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
             ),
           ),
           onPressed: () {
-            final memberData = {
-              'avatar': null,
-              'name': nameController.text.trim(),
-              'branch': selectedBranch,
-              'location': selectedLocation,
-              'savings': double.tryParse(savingsController.text.trim()) ?? 0.0,
-              'disbursement':
-                  double.tryParse(disbursementController.text.trim()) ?? 0.0,
-            };
-            Navigator.of(context).pop(memberData);
+            if (_formKey.currentState?.validate() ?? false) {
+              final memberData = {
+                'avatar': null,
+                'name': nameController.text.trim(),
+                'branch': selectedBranch,
+                'location': selectedLocation,
+                'savings':
+                    double.tryParse(savingsController.text.trim()) ?? 0.0,
+                'disbursement':
+                    double.tryParse(disbursementController.text.trim()) ?? 0.0,
+              };
+              Navigator.of(context).pop(memberData);
+            }
           },
           child: Text(widget.isEdit ? 'Save' : 'Add'),
         ),

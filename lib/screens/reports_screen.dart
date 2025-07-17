@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../widgets/user_profile_bar.dart';
 import '../widgets/styled_dropdown.dart';
 import '../widgets/reports_summary_row.dart';
@@ -22,29 +23,15 @@ class _ReportsScreenState extends State<ReportsScreen> {
     'Branch 7 - LIPA CITY',
     'Branch 8 - BATANGAS CITY',
     'Branch 9 - MABINI LIPA',
+    'Branch 10 - CALAMIAS',
+    'Branch 11 - LEMERY',
+    'Branch 12 - MATAAS NA KAHOY',
   ];
-  final months = [
-    'Select Month',
-    'JANUARY',
-    'FEBRUARY',
-    'MARCH',
-    'APRIL',
-    'MAY',
-    'JUNE',
-    'JULY',
-    'AUGUST',
-    'SEPTEMBER',
-    'OCTOBER',
-    'NOVEMBER',
-    'DECEMBER',
-  ];
-  final years = ['Select Year', '2025', '2024', '2023', '2022'];
   final types = ['Select Type', 'SAVINGS', 'DISBURSEMENT'];
 
   String selectedBranch = 'Select Branch';
-  String selectedMonth = 'Select Month';
-  String selectedYear = 'Select Year';
   String selectedType = 'Select Type';
+  DateTime? selectedDate;
   String selectedOption = 'Select';
 
   @override
@@ -106,7 +93,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        // Top row: SELECT BRANCH, SELECT MONTH, SELECT YEAR
+                        // Top row: SELECT BRANCH, CALENDAR
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
@@ -118,171 +105,95 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                     setState(() => selectedBranch = v!),
                               ),
                               const SizedBox(height: 12),
-                              StyledDropdown<String>(
-                                value: selectedMonth,
-                                items: months,
-                                onChanged: (v) =>
-                                    setState(() => selectedMonth = v!),
-                              ),
-                              const SizedBox(height: 12),
-                              StyledDropdown<String>(
-                                value: selectedYear,
-                                items: years,
-                                onChanged: (v) =>
-                                    setState(() => selectedYear = v!),
-                              ),
+                              _buildCalendarPicker(context),
                             ],
                           ),
                         ),
                         const SizedBox(height: 12),
-                        // Two-column grid: left (MEMBER/SAVINGS/DISBURSEMENT), right (TYPE MEMBER/SUMMARY)
+                        // Type selection and summary
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Column(
                             children: [
-                              // Left column
-                              Column(
+                              // Type toggle buttons
+                              Row(
                                 children: [
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 44,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF0B5E1C,
-                                        ).withOpacity(0.5),
-                                        foregroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                          side: const BorderSide(
-                                            color: Color(0xFF0B5E1C),
-                                          ),
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 54,
+                                      child: TypeToggleButton(
+                                        label: 'SAVINGS',
+                                        icon: Icons.savings,
+                                        selected: selectedType == 'SAVINGS',
+                                        onTap: () => setState(
+                                          () => selectedType = 'SAVINGS',
                                         ),
-                                        elevation: 0,
-                                      ),
-                                      onPressed: () {},
-                                      child: const Text('MEMBER'),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 54,
-                                    child: TypeToggleButton(
-                                      label: 'SAVINGS',
-                                      icon: Icons.savings,
-                                      selected: selectedType == 'SAVINGS',
-                                      onTap: () => setState(
-                                        () => selectedType = 'SAVINGS',
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 54,
-                                    child: TypeToggleButton(
-                                      label: 'DISBURSEMENT',
-                                      icon: Icons.payments,
-                                      selected: selectedType == 'DISBURSEMENT',
-                                      onTap: () => setState(
-                                        () => selectedType = 'DISBURSEMENT',
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: 54,
+                                      child: TypeToggleButton(
+                                        label: 'DISBURSEMENT',
+                                        icon: Icons.payments,
+                                        selected:
+                                            selectedType == 'DISBURSEMENT',
+                                        onTap: () => setState(
+                                          () => selectedType = 'DISBURSEMENT',
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 16),
-                              // Right column
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 44,
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                        hintText: 'TYPE MEMBER.........',
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                              vertical: 10,
-                                            ),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                          borderSide: const BorderSide(
-                                            color: Color(0xFF0B5E1C),
-                                          ),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                          borderSide: const BorderSide(
-                                            color: Color(0xFF0B5E1C),
-                                          ),
-                                        ),
-                                      ),
+                              // Summary container
+                              SizedBox(
+                                width: double.infinity,
+                                child: Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Color(0xFF0B5E1C),
                                     ),
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: Colors.white,
                                   ),
-                                  const SizedBox(height: 12),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 116,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Color(0xFF0B5E1C),
-                                        ),
-                                        borderRadius: BorderRadius.circular(4),
-                                        color: Colors.white,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ReportsSummaryRow(
+                                        label: 'SELECTED BRANCH',
+                                        value: selectedBranch == 'Select Branch'
+                                            ? '-'
+                                            : selectedBranch
+                                                  .split('-')
+                                                  .last
+                                                  .trim(),
                                       ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          ReportsSummaryRow(
-                                            label: 'SELECTED BRANCH',
-                                            value:
-                                                selectedBranch ==
-                                                    'Select Branch'
-                                                ? '-'
-                                                : selectedBranch
-                                                      .split('-')
-                                                      .last
-                                                      .trim(),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          ReportsSummaryRow(
-                                            label: 'SELECTED DATE',
-                                            value:
-                                                (selectedMonth ==
-                                                        'Select Month' ||
-                                                    selectedYear ==
-                                                        'Select Year')
-                                                ? '-'
-                                                : '${selectedMonth} ${selectedYear}',
-                                          ),
-                                          const SizedBox(height: 8),
-                                          ReportsSummaryRow(
-                                            label: 'SELECTED TYPE',
-                                            value: selectedType == 'Select Type'
-                                                ? '-'
-                                                : selectedType,
-                                          ),
-                                        ],
+                                      const SizedBox(height: 8),
+                                      ReportsSummaryRow(
+                                        label: 'SELECTED DATE',
+                                        value: selectedDate == null
+                                            ? '-'
+                                            : DateFormat(
+                                                'MMMM d, yyyy',
+                                              ).format(selectedDate!),
                                       ),
-                                    ),
+                                      const SizedBox(height: 8),
+                                      ReportsSummaryRow(
+                                        label: 'SELECTED TYPE',
+                                        value: selectedType == 'Select Type'
+                                            ? '-'
+                                            : selectedType,
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
@@ -369,183 +280,118 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        // Top row: SELECT BRANCH, SELECT MONTH, SELECT YEAR
+                        // Top row: SELECT BRANCH, CALENDAR
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              StyledDropdown<String>(
-                                value: selectedBranch,
-                                items: branches,
-                                onChanged: (v) =>
-                                    setState(() => selectedBranch = v!),
+                              Expanded(
+                                flex: 2,
+                                child: StyledDropdown<String>(
+                                  value: selectedBranch,
+                                  items: branches,
+                                  onChanged: (v) =>
+                                      setState(() => selectedBranch = v!),
+                                ),
                               ),
-                              const SizedBox(height: 12),
-                              StyledDropdown<String>(
-                                value: selectedMonth,
-                                items: months,
-                                onChanged: (v) =>
-                                    setState(() => selectedMonth = v!),
-                              ),
-                              const SizedBox(height: 12),
-                              StyledDropdown<String>(
-                                value: selectedYear,
-                                items: years,
-                                onChanged: (v) =>
-                                    setState(() => selectedYear = v!),
+                              const SizedBox(width: 24),
+                              Expanded(
+                                flex: 3,
+                                child: _buildCalendarPicker(context),
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(height: 12),
-                        // Two-column grid: left (MEMBER/SAVINGS/DISBURSEMENT), right (TYPE MEMBER/SUMMARY)
+                        // Type selection and summary
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Left column
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 44,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(
-                                          0xFF0B5E1C,
-                                        ).withOpacity(0.5),
-                                        foregroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                          side: const BorderSide(
-                                            color: Color(0xFF0B5E1C),
+                              // Type toggle buttons
+                              Expanded(
+                                flex: 2,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 54,
+                                        child: TypeToggleButton(
+                                          label: 'SAVINGS',
+                                          icon: Icons.savings,
+                                          selected: selectedType == 'SAVINGS',
+                                          onTap: () => setState(
+                                            () => selectedType = 'SAVINGS',
                                           ),
                                         ),
-                                        elevation: 0,
-                                      ),
-                                      onPressed: () {},
-                                      child: const Text('MEMBER'),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 54,
-                                    child: TypeToggleButton(
-                                      label: 'SAVINGS',
-                                      icon: Icons.savings,
-                                      selected: selectedType == 'SAVINGS',
-                                      onTap: () => setState(
-                                        () => selectedType = 'SAVINGS',
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 54,
-                                    child: TypeToggleButton(
-                                      label: 'DISBURSEMENT',
-                                      icon: Icons.payments,
-                                      selected: selectedType == 'DISBURSEMENT',
-                                      onTap: () => setState(
-                                        () => selectedType = 'DISBURSEMENT',
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 54,
+                                        child: TypeToggleButton(
+                                          label: 'DISBURSEMENT',
+                                          icon: Icons.payments,
+                                          selected:
+                                              selectedType == 'DISBURSEMENT',
+                                          onTap: () => setState(
+                                            () => selectedType = 'DISBURSEMENT',
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                              const SizedBox(height: 16),
-                              // Right column
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 44,
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                        hintText: 'TYPE MEMBER.........',
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                              vertical: 10,
-                                            ),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                          borderSide: const BorderSide(
-                                            color: Color(0xFF0B5E1C),
-                                          ),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                          borderSide: const BorderSide(
-                                            color: Color(0xFF0B5E1C),
-                                          ),
-                                        ),
-                                      ),
+                              const SizedBox(width: 24),
+                              // Summary container
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Color(0xFF0B5E1C),
                                     ),
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: Colors.white,
                                   ),
-                                  const SizedBox(height: 12),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 116,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Color(0xFF0B5E1C),
-                                        ),
-                                        borderRadius: BorderRadius.circular(4),
-                                        color: Colors.white,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ReportsSummaryRow(
+                                        label: 'SELECTED BRANCH',
+                                        value: selectedBranch == 'Select Branch'
+                                            ? '-'
+                                            : selectedBranch
+                                                  .split('-')
+                                                  .last
+                                                  .trim(),
                                       ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          ReportsSummaryRow(
-                                            label: 'SELECTED BRANCH',
-                                            value:
-                                                selectedBranch ==
-                                                    'Select Branch'
-                                                ? '-'
-                                                : selectedBranch
-                                                      .split('-')
-                                                      .last
-                                                      .trim(),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          ReportsSummaryRow(
-                                            label: 'SELECTED DATE',
-                                            value:
-                                                (selectedMonth ==
-                                                        'Select Month' ||
-                                                    selectedYear ==
-                                                        'Select Year')
-                                                ? '-'
-                                                : '${selectedMonth} ${selectedYear}',
-                                          ),
-                                          const SizedBox(height: 8),
-                                          ReportsSummaryRow(
-                                            label: 'SELECTED TYPE',
-                                            value: selectedType == 'Select Type'
-                                                ? '-'
-                                                : selectedType,
-                                          ),
-                                        ],
+                                      const SizedBox(height: 8),
+                                      ReportsSummaryRow(
+                                        label: 'SELECTED DATE',
+                                        value: selectedDate == null
+                                            ? '-'
+                                            : DateFormat(
+                                                'MMMM d, yyyy',
+                                              ).format(selectedDate!),
                                       ),
-                                    ),
+                                      const SizedBox(height: 8),
+                                      ReportsSummaryRow(
+                                        label: 'SELECTED TYPE',
+                                        value: selectedType == 'Select Type'
+                                            ? '-'
+                                            : selectedType,
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
@@ -589,6 +435,82 @@ class _ReportsScreenState extends State<ReportsScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildCalendarPicker(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        final now = DateTime.now();
+        final picked = await showDatePicker(
+          context: context,
+          initialDate: selectedDate ?? now,
+          firstDate: DateTime(2020),
+          lastDate: DateTime(now.year + 2),
+          builder: (context, child) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: const ColorScheme.light(
+                  primary: Color(0xFF0B5E1C), // header background color
+                  onPrimary: Colors.white, // header text color
+                  onSurface: Color(0xFF0B5E1C), // body text color
+                  secondary: Color(0xFFB2E5B2), // accent color
+                ),
+                dialogBackgroundColor: Color(0xFFE9EEF3),
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Color(0xFF0B5E1C),
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                dialogTheme: DialogThemeData(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                ),
+              ),
+              child: child!,
+            );
+          },
+        );
+        if (picked != null) {
+          setState(() => selectedDate = picked);
+        }
+      },
+      child: Container(
+        width: double.infinity,
+        height: 54,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFF0B5E1C)),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+            Icon(Icons.calendar_today, color: const Color(0xFF0B5E1C)),
+            const SizedBox(width: 12),
+            Text(
+              selectedDate == null
+                  ? 'Select Date'
+                  : DateFormat('MMMM d, yyyy').format(selectedDate!),
+              style: const TextStyle(
+                fontSize: 16,
+                color: Color(0xFF0B5E1C),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

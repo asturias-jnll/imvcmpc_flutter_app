@@ -21,7 +21,7 @@ class UserProfileBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             Text(
-              'Finance Officer',
+              'Marketing Clerk',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             Text(
@@ -33,4 +33,4 @@ class UserProfileBar extends StatelessWidget {
       ],
     );
   }
-} 
+}
