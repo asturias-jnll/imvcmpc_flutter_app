@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.imvcmc_dashboard"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 33
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
