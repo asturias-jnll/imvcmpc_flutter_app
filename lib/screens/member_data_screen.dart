@@ -494,40 +494,56 @@ class _MemberDataScreenState extends State<MemberDataScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFFE9EEF3),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        content: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.check_circle,
-                color: Color(0xFF0B5E1C),
-                size: 48,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF0B5E1C), Color(0xFF69B41E)],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(18),
               ),
-              const SizedBox(height: 16),
-              Text(
+              child: const Center(
+                child: Icon(Icons.check_circle, color: Colors.white, size: 38),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
                 message,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF0B5E1C),
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              'OK',
-              style: TextStyle(
-                color: Color(0xFF0B5E1C),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFF0B5E1C),
+              textStyle: const TextStyle(
                 fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -576,48 +592,68 @@ class _MemberDataScreenState extends State<MemberDataScreen> {
                       ),
                       const SizedBox(height: 18),
                       // 2. Title
-                      const Text(
-                        'Member Contributors',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF0B5E1C),
+                      Padding(
+                        padding: EdgeInsets.zero,
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Color(0x800B5E1C),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Text(
+                            'MEMBER CONTRIBUTORS',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 18,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 18),
                       // 3. Search (full width)
                       TextField(
                         controller: searchController,
+                        onChanged: (value) =>
+                            setState(() => searchQuery = value),
                         decoration: InputDecoration(
                           hintText: 'Search by name',
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF0B5E1C),
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF0B5E1C),
-                            ),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: const Color(0xFF0B5E1C),
                           ),
                           filled: true,
                           fillColor: Colors.white,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                            horizontal: 18,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                              color: const Color(0xFF0B5E1C),
+                              width: 1.5,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                              color: const Color(0xFF0B5E1C).withOpacity(0.5),
+                              width: 1.2,
+                            ),
+                          ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF0B5E1C),
-                              width: 2.0,
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                              color: const Color(0xFF0B5E1C),
+                              width: 2,
                             ),
                           ),
                         ),
-                        cursorColor: Color(0xFF0B5E1C),
-                        onChanged: (val) => setState(() => searchQuery = val),
+                        style: TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 10),
                       // 4. Sort and Branch Filter Row
@@ -627,39 +663,76 @@ class _MemberDataScreenState extends State<MemberDataScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF0B5E1C),
-                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(
+                                color: const Color(0xFF0B5E1C),
+                                width: 1.2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(
+                                    0xFF0B5E1C,
+                                  ).withOpacity(0.06),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
                                 value: sortBy,
-                                dropdownColor: const Color(0xFF0B5E1C),
+                                dropdownColor: Colors.white,
                                 icon: const Icon(
                                   Icons.arrow_drop_down,
-                                  color: Colors.white,
+                                  color: Color(0xFF0B5E1C),
                                 ),
                                 style: const TextStyle(
-                                  color: Colors.white,
+                                  color: Color(0xFF0B5E1C),
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 16,
                                 ),
-                                items: const [
-                                  DropdownMenuItem(
-                                    value: 'Total',
-                                    child: Text('Total'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'Branch',
-                                    child: Text('Branch'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'Savings',
-                                    child: Text('Savings'),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: 'Disbursement',
-                                    child: Text('Disbursement'),
-                                  ),
-                                ],
+                                borderRadius: BorderRadius.circular(24),
+                                items:
+                                    [
+                                      'Total',
+                                      'Branch',
+                                      'Savings',
+                                      'Disbursement',
+                                    ].map((option) {
+                                      final selected = sortBy == option;
+                                      return DropdownMenuItem(
+                                        value: option,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 8,
+                                            horizontal: 18,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: selected
+                                                ? const Color(
+                                                    0xFFB8D53D,
+                                                  ).withOpacity(0.18)
+                                                : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(
+                                              22,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            option,
+                                            style: TextStyle(
+                                              color: selected
+                                                  ? const Color(0xFF0B5E1C)
+                                                  : Colors.black87,
+                                              fontWeight: selected
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
                                 onChanged: (val) =>
                                     setState(() => sortBy = val!),
                               ),
@@ -682,28 +755,6 @@ class _MemberDataScreenState extends State<MemberDataScreen> {
                         ],
                       ),
                       const SizedBox(height: 14),
-                      // Green header edge-to-edge with rounded corners
-                      Padding(
-                        padding: EdgeInsets.zero,
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: Color(0x800B5E1C),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'MEMBER CONTRIBUTORS',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
                       // Member List inside white container (no header)
                       Container(
                         width: double.infinity,
@@ -798,36 +849,43 @@ class _MemberDataScreenState extends State<MemberDataScreen> {
                             width: 220,
                             child: TextField(
                               controller: searchController,
+                              onChanged: (value) =>
+                                  setState(() => searchQuery = value),
                               decoration: InputDecoration(
                                 hintText: 'Search by name',
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 14,
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: Color(0xFF0B5E1C),
                                 ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                isDense: true,
                                 filled: true,
                                 fillColor: Colors.white,
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                  horizontal: 18,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
                                     color: Color(0xFF0B5E1C),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
+                                    color: Color(0xFF0B5E1C).withOpacity(0.5),
+                                    width: 1.2,
                                   ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  borderSide: const BorderSide(
+                                  borderRadius: BorderRadius.circular(30),
+                                  borderSide: BorderSide(
                                     color: Color(0xFF0B5E1C),
-                                    width: 2.0,
+                                    width: 2,
                                   ),
                                 ),
                               ),
-                              cursorColor: Color(0xFF0B5E1C),
-                              style: const TextStyle(fontSize: 16),
-                              onChanged: (val) =>
-                                  setState(() => searchQuery = val),
+                              style: const TextStyle(fontSize: 18),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -835,8 +893,21 @@ class _MemberDataScreenState extends State<MemberDataScreen> {
                             height: 48,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: const Color(0xFF0B5E1C),
-                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(
+                                  color: const Color(0xFF0B5E1C),
+                                  width: 1.2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(
+                                      0xFF0B5E1C,
+                                    ).withOpacity(0.06),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
@@ -844,34 +915,56 @@ class _MemberDataScreenState extends State<MemberDataScreen> {
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
                                   value: sortBy,
-                                  dropdownColor: const Color(0xFF0B5E1C),
+                                  dropdownColor: Colors.white,
                                   icon: const Icon(
                                     Icons.arrow_drop_down,
-                                    color: Colors.white,
+                                    color: Color(0xFF0B5E1C),
                                   ),
                                   style: const TextStyle(
-                                    color: Colors.white,
+                                    color: Color(0xFF0B5E1C),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                   ),
-                                  items: const [
-                                    DropdownMenuItem(
-                                      value: 'Total',
-                                      child: Text('Total'),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 'Branch',
-                                      child: Text('Branch'),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 'Savings',
-                                      child: Text('Savings'),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 'Disbursement',
-                                      child: Text('Disbursement'),
-                                    ),
-                                  ],
+                                  borderRadius: BorderRadius.circular(24),
+                                  items:
+                                      [
+                                        'Total',
+                                        'Branch',
+                                        'Savings',
+                                        'Disbursement',
+                                      ].map((option) {
+                                        final selected = sortBy == option;
+                                        return DropdownMenuItem(
+                                          value: option,
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 8,
+                                              horizontal: 18,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: selected
+                                                  ? const Color(
+                                                      0xFFB8D53D,
+                                                    ).withOpacity(0.18)
+                                                  : Colors.transparent,
+                                              borderRadius:
+                                                  BorderRadius.circular(22),
+                                            ),
+                                            child: Text(
+                                              option,
+                                              style: TextStyle(
+                                                color: selected
+                                                    ? const Color(0xFF0B5E1C)
+                                                    : Colors.black87,
+                                                fontWeight: selected
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
                                   onChanged: (val) =>
                                       setState(() => sortBy = val!),
                                 ),

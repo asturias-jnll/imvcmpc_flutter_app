@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme_colors.dart';
 
 class TopBranchesCard extends StatelessWidget {
   const TopBranchesCard({super.key});
@@ -20,51 +21,75 @@ class TopBranchesCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Top Branches',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
-              color: Color(0xFF0B5E1C),
+              color: AppColors.darkGreen,
             ),
           ),
           const SizedBox(height: 16),
-          ...branches.map(
-            (b) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 7),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: Colors.grey[200],
-                    child: const Icon(Icons.groups, color: Color(0xFF0B5E1C)),
-                  ),
-                  const SizedBox(width: 14),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          ...branches.asMap().entries.map((entry) {
+            final b = entry.value;
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 7),
+                  child: Row(
                     children: [
-                      Text(
-                        b['name']!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                      CircleAvatar(
+                        radius: 18,
+                        backgroundColor: AppColors.limeGreen.withOpacity(0.15),
+                        child: Icon(Icons.groups, color: AppColors.green),
+                      ),
+                      const SizedBox(width: 14),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.limeGreen.withOpacity(0.25),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          b['name']!,
+                          style: const TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
-                      Text(
-                        b['branch']!,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Colors.black54,
-                        ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            b['branch']!,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          ),
+                ),
+                if (entry.key != branches.length - 1)
+                  Divider(
+                    height: 1,
+                    color: Colors.black12,
+                    indent: 10,
+                    endIndent: 10,
+                  ),
+              ],
+            );
+          }),
         ],
       ),
     );
   }
-} 
+}

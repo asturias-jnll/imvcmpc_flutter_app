@@ -5,6 +5,7 @@ import '../widgets/top_contributors_card.dart';
 import '../widgets/top_branches_card.dart';
 import '../widgets/filter_button.dart';
 import '../widgets/user_profile_bar.dart';
+import '../theme_colors.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -67,7 +68,7 @@ class DashboardScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF0B5E1C),
+                          color: AppColors.darkGreen,
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -80,7 +81,7 @@ class DashboardScreen extends StatelessWidget {
                       const AIRecommendationCard(),
                       SizedBox(height: 24),
                       // Charts
-                      const ChartCard(
+                      ChartCard(
                         title: 'Monthly\nSavings per Branch',
                         barHeights: [
                           80,
@@ -110,9 +111,14 @@ class DashboardScreen extends StatelessWidget {
                           'Nov',
                           'Dec',
                         ],
+                        barGradient: const LinearGradient(
+                          colors: [AppColors.darkGreen, AppColors.limeGreen],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
                       ),
                       SizedBox(height: 18),
-                      const ChartCard(
+                      ChartCard(
                         title: 'Monthly\nDisbursements per Branch',
                         barHeights: [
                           60,
@@ -142,9 +148,14 @@ class DashboardScreen extends StatelessWidget {
                           'Nov',
                           'Dec',
                         ],
+                        barGradient: const LinearGradient(
+                          colors: [AppColors.green, AppColors.yellowGreen],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
                       ),
                       SizedBox(height: 18),
-                      const ChartCard(
+                      ChartCard(
                         title: 'Annual\nSavings per Branch',
                         isSparkline: true,
                         sparklineData: [
@@ -175,6 +186,10 @@ class DashboardScreen extends StatelessWidget {
                           'B11',
                           'B12',
                         ],
+                        valueColor: AppColors.darkGreen,
+                        backgroundColor: AppColors.yellowGreen.withOpacity(
+                          0.18,
+                        ),
                       ),
                       SizedBox(height: 32),
                       // Contributors and Branches
@@ -219,7 +234,7 @@ class DashboardScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF0B5E1C),
+                              color: AppColors.darkGreen,
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -275,6 +290,11 @@ class DashboardScreen extends StatelessWidget {
                           'Nov',
                           'Dec',
                         ],
+                        barGradient: const LinearGradient(
+                          colors: [AppColors.darkGreen, AppColors.limeGreen],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 18),
@@ -309,10 +329,15 @@ class DashboardScreen extends StatelessWidget {
                           'Nov',
                           'Dec',
                         ],
+                        barGradient: const LinearGradient(
+                          colors: [AppColors.green, AppColors.yellowGreen],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 18),
-                    const Expanded(
+                    Expanded(
                       child: ChartCard(
                         title: 'Annual\nSavings per Branch',
                         isSparkline: true,
@@ -344,6 +369,10 @@ class DashboardScreen extends StatelessWidget {
                           'B11',
                           'B12',
                         ],
+                        valueColor: AppColors.darkGreen,
+                        backgroundColor: AppColors.yellowGreen.withOpacity(
+                          0.18,
+                        ),
                       ),
                     ),
                   ],

@@ -84,7 +84,7 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
     final isWide = MediaQuery.of(context).size.width > 600;
     return AlertDialog(
       backgroundColor: const Color(0xFFE9EEF3),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       content: ConstrainedBox(
         constraints: BoxConstraints(
           minWidth: MediaQuery.of(context).size.width < 600 ? 320 : 400,
@@ -98,10 +98,14 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0B5E1C),
-                    borderRadius: BorderRadius.circular(8),
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF0B5E1C), Color(0xFF69B41E)],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
                   ),
                   child: Center(
                     child: Text(
@@ -109,19 +113,20 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 20,
                         letterSpacing: 1,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 22),
                 // Name
                 TextFormField(
                   controller: nameController,
                   enabled: !widget.isEdit,
                   decoration: InputDecoration(
                     labelText: 'Name',
+                    prefixIcon: Icon(Icons.person, color: Color(0xFF0B5E1C)),
                     filled: true,
                     fillColor: widget.isEdit ? Colors.grey[100] : Colors.white,
                     labelStyle: TextStyle(
@@ -133,16 +138,20 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                           : FontStyle.normal,
                       fontWeight: FontWeight.normal,
                     ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 18,
+                      horizontal: 22,
+                    ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                       borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
                     ),
                     disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                       borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                       borderSide: const BorderSide(
                         color: Color(0xFF0B5E1C),
                         width: 2.0,
@@ -163,7 +172,7 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 // Branch Dropdown (add only)
                 widget.isEdit
                     ? TextField(
@@ -171,6 +180,10 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                         controller: TextEditingController(text: selectedBranch),
                         decoration: InputDecoration(
                           labelText: 'Branch',
+                          prefixIcon: Icon(
+                            Icons.account_tree,
+                            color: Color(0xFF0B5E1C),
+                          ),
                           filled: true,
                           fillColor: Colors.grey[100],
                           labelStyle: const TextStyle(
@@ -178,14 +191,18 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                             fontStyle: FontStyle.italic,
                             fontWeight: FontWeight.normal,
                           ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 18,
+                            horizontal: 22,
+                          ),
                           disabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(30),
                             borderSide: const BorderSide(
                               color: Color(0xFF0B5E1C),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(30),
                             borderSide: const BorderSide(
                               color: Color(0xFF0B5E1C),
                               width: 2.0,
@@ -200,9 +217,13 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                       )
                     : DropdownButtonFormField<String>(
                         value: selectedBranch,
+                        isExpanded: true,
                         items: branches
                             .map(
-                              (b) => DropdownMenuItem(value: b, child: Text(b)),
+                              (b) => DropdownMenuItem(
+                                value: b,
+                                child: Text(b, overflow: TextOverflow.ellipsis),
+                              ),
                             )
                             .toList(),
                         onChanged: (val) {
@@ -213,17 +234,25 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                         },
                         decoration: InputDecoration(
                           labelText: 'Branch',
+                          prefixIcon: Icon(
+                            Icons.account_tree,
+                            color: Color(0xFF0B5E1C),
+                          ),
                           filled: true,
                           fillColor: Colors.white,
                           labelStyle: const TextStyle(color: Color(0xFF0B5E1C)),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 18,
+                            horizontal: 22,
+                          ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(30),
                             borderSide: const BorderSide(
                               color: Color(0xFF0B5E1C),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(30),
                             borderSide: const BorderSide(
                               color: Color(0xFF0B5E1C),
                               width: 2.0,
@@ -231,21 +260,29 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                           ),
                         ),
                         dropdownColor: Colors.white,
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: Color(0xFF0B5E1C),
+                        ),
+                        borderRadius: BorderRadius.circular(22),
                         style: const TextStyle(color: Color(0xFF0B5E1C)),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Branch is required';
-                          }
-                          return null;
-                        },
+                        menuMaxHeight: 260,
+                        // Limit dropdown width for desktop, use full width for mobile
+                        alignment: AlignmentDirectional.centerStart,
+                        // For Flutter 3.7+, you can use constraints:
+                        // constraints: BoxConstraints(maxWidth: 320),
                       ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 // Location (auto, not editable)
                 TextField(
                   enabled: false,
                   controller: TextEditingController(text: selectedLocation),
                   decoration: InputDecoration(
                     labelText: 'Location',
+                    prefixIcon: Icon(
+                      Icons.location_on,
+                      color: Color(0xFF0B5E1C),
+                    ),
                     filled: true,
                     fillColor: Colors.grey[100],
                     labelStyle: const TextStyle(
@@ -253,12 +290,16 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.normal,
                     ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 18,
+                      horizontal: 22,
+                    ),
                     disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                       borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                       borderSide: const BorderSide(
                         color: Color(0xFF0B5E1C),
                         width: 2.0,
@@ -271,24 +312,29 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                     fontWeight: FontWeight.normal,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 // Savings
                 TextFormField(
                   controller: savingsController,
                   decoration: InputDecoration(
                     labelText: 'Savings',
+                    prefixIcon: Icon(Icons.savings, color: Color(0xFF0B5E1C)),
                     filled: true,
                     fillColor: Colors.white,
                     labelStyle: const TextStyle(
                       color: Color(0xFF0B5E1C),
                       fontWeight: FontWeight.bold,
                     ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 18,
+                      horizontal: 22,
+                    ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                       borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                       borderSide: const BorderSide(
                         color: Color(0xFF0B5E1C),
                         width: 2.0,
@@ -315,24 +361,29 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 // Disbursement
                 TextFormField(
                   controller: disbursementController,
                   decoration: InputDecoration(
                     labelText: 'Disbursement',
+                    prefixIcon: Icon(Icons.money_off, color: Color(0xFF0B5E1C)),
                     filled: true,
                     fillColor: Colors.white,
                     labelStyle: const TextStyle(
                       color: Color(0xFF0B5E1C),
                       fontWeight: FontWeight.bold,
                     ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 18,
+                      horizontal: 22,
+                    ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                       borderSide: const BorderSide(color: Color(0xFF0B5E1C)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                       borderSide: const BorderSide(
                         color: Color(0xFF0B5E1C),
                         width: 2.0,
@@ -369,7 +420,14 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
           onPressed: () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
             foregroundColor: const Color(0xFF0B5E1C),
-            textStyle: const TextStyle(fontWeight: FontWeight.bold),
+            textStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           ),
           child: const Text('Cancel'),
         ),
@@ -378,8 +436,15 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
             backgroundColor: const Color(0xFF0B5E1C),
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(30),
             ),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+            textStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+            elevation: 2,
+            shadowColor: Color(0xFF69B41E).withOpacity(0.18),
           ),
           onPressed: () {
             if (_formKey.currentState?.validate() ?? false) {

@@ -4,6 +4,7 @@ import '../widgets/filter_button.dart';
 import '../widgets/ai_recommendation_card.dart';
 import '../widgets/chart_card.dart';
 import '../widgets/top_branches_card.dart';
+import '../theme_colors.dart';
 
 class AnalyticsScreen extends StatelessWidget {
   const AnalyticsScreen({super.key});
@@ -190,7 +191,7 @@ class AnalyticsScreen extends StatelessWidget {
                           // Right column: Annual Savings (top), Top Branches (bottom)
                           Expanded(
                             child: Column(
-                              children: const [
+                              children: [
                                 SizedBox(
                                   height: 280,
                                   child: ChartCard(
@@ -224,6 +225,8 @@ class AnalyticsScreen extends StatelessWidget {
                                       'B11',
                                       'B12',
                                     ],
+                                    backgroundColor: AppColors.yellowGreen
+                                        .withOpacity(0.18),
                                   ),
                                 ),
                                 SizedBox(height: 18),
@@ -235,7 +238,7 @@ class AnalyticsScreen extends StatelessWidget {
                       ),
                     )
                   : Column(
-                      children: const [
+                      children: [
                         ChartCard(
                           title: 'Monthly\nSavings per Branch',
                           barHeights: [
@@ -303,6 +306,9 @@ class AnalyticsScreen extends StatelessWidget {
                             'B11',
                             'B12',
                           ],
+                          backgroundColor: AppColors.yellowGreen.withOpacity(
+                            0.18,
+                          ),
                         ),
                         SizedBox(height: 18),
                         TopBranchesCard(),

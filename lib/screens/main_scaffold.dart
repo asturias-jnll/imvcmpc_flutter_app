@@ -88,30 +88,14 @@ class _MainScaffoldState extends State<MainScaffold> {
                     ),
                   ],
                 )
-              : AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 400),
-                  transitionBuilder: (child, animation) {
-                    final offsetAnimation = Tween<Offset>(
-                      begin: const Offset(0.1, 0),
-                      end: Offset.zero,
-                    ).animate(animation);
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SlideTransition(
-                        position: offsetAnimation,
-                        child: child,
-                      ),
-                    );
-                  },
-                  child: _getMobileScreen(_selectedIndex),
-                ),
+              : _getMobileScreen(_selectedIndex),
           bottomNavigationBar: isWide
               ? null
               : BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,
-                  backgroundColor: const Color(0xFF0B5E1C),
-                  selectedItemColor: Colors.white,
-                  unselectedItemColor: Colors.white70,
+                  backgroundColor: Colors.white,
+                  selectedItemColor: const Color(0xFF0B5E1C),
+                  unselectedItemColor: Colors.black45,
                   currentIndex: _selectedIndex,
                   onTap: _onNavTap,
                   items: const [

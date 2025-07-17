@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme_colors.dart';
 
 class ChartCard extends StatelessWidget {
   final String title;
@@ -10,6 +11,9 @@ class ChartCard extends StatelessWidget {
   final bool isSparkline;
   final List<double>? sparklineData;
   final List<String>? sparklineLabels;
+  final Gradient? barGradient;
+  final Color? valueColor; // For sparkline value
+  final Color? backgroundColor; // New parameter for background color
   const ChartCard({
     required this.title,
     this.isLine = false,
@@ -20,6 +24,9 @@ class ChartCard extends StatelessWidget {
     this.isSparkline = false,
     this.sparklineData,
     this.sparklineLabels,
+    this.barGradient,
+    this.valueColor,
+    this.backgroundColor, // Add to constructor
     super.key,
   });
   @override
@@ -28,7 +35,7 @@ class ChartCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: backgroundColor ?? AppColors.limeGreen.withOpacity(0.10),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -40,6 +47,7 @@ class ChartCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: 17,
               letterSpacing: 0.2,
+              color: AppColors.darkGreen,
             ),
           ),
           const SizedBox(height: 12),
@@ -68,6 +76,7 @@ class ChartCard extends StatelessWidget {
                           'B11',
                           'B12',
                         ],
+                    valueColor: valueColor,
                   )
                 : isLine
                 ? SimpleLineGraph(
@@ -96,6 +105,7 @@ class ChartCard extends StatelessWidget {
                         barHeights ??
                         [80, 110, 70, 100, 120, 90, 115, 85, 105, 75],
                     barLabels: barLabels,
+                    barGradient: barGradient,
                   ),
           ),
         ],
@@ -172,8 +182,8 @@ class SimpleLineGraph extends StatelessWidget {
                     height: 10,
                     decoration: BoxDecoration(
                       color: i == minIndex || i == maxIndex
-                          ? Colors.red
-                          : const Color(0xFF0B5E1C),
+                          ? AppColors.yellowGreen
+                          : AppColors.darkGreen,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
@@ -191,13 +201,16 @@ class SimpleLineGraph extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: Colors.red,
+                        color: AppColors.yellowGreen,
                       ),
                     ),
                     const SizedBox(height: 2),
                     const Text(
                       'Min',
-                      style: TextStyle(fontSize: 10, color: Colors.red),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: AppColors.yellowGreen,
+                      ),
                     ),
                   ],
                 ),
@@ -212,13 +225,16 @@ class SimpleLineGraph extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: Colors.red,
+                        color: AppColors.yellowGreen,
                       ),
                     ),
                     const SizedBox(height: 2),
                     const Text(
                       'Max',
-                      style: TextStyle(fontSize: 10, color: Colors.red),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: AppColors.yellowGreen,
+                      ),
                     ),
                   ],
                 ),
@@ -267,7 +283,7 @@ class _LineGraphPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFF0B5E1C)
+      ..color = AppColors.darkGreen
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
     final path = Path();
@@ -287,7 +303,13 @@ class _LineGraphPainter extends CustomPainter {
 class CustomBarGraph extends StatelessWidget {
   final List<double> barHeights;
   final List<String>? barLabels;
-  const CustomBarGraph({required this.barHeights, this.barLabels, super.key});
+  final Gradient? barGradient;
+  const CustomBarGraph({
+    required this.barHeights,
+    this.barLabels,
+    this.barGradient,
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     final labels =
@@ -328,7 +350,7 @@ class CustomBarGraph extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF0B5E1C),
+                      color: AppColors.darkGreen,
                     ),
                   ),
                   Container(
@@ -337,11 +359,13 @@ class CustomBarGraph extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(6),
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF0B5E1C), Color(0xFFB2E5B2)],
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                      ),
+                      gradient:
+                          barGradient ??
+                          const LinearGradient(
+                            colors: [AppColors.darkGreen, AppColors.limeGreen],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
                     ),
                   ),
                   SizedBox(
@@ -370,6 +394,7 @@ class CustomBarGraph extends StatelessWidget {
 class SparklineChart extends StatelessWidget {
   final List<double> data;
   final List<String> labels;
+  final Color? valueColor;
   const SparklineChart({
     this.data = const [80, 110, 70, 100, 120, 90, 115, 85, 105, 75, 95, 100],
     this.labels = const [
@@ -386,6 +411,7 @@ class SparklineChart extends StatelessWidget {
       'B11',
       'B12',
     ],
+    this.valueColor,
     super.key,
   });
   @override
@@ -432,7 +458,7 @@ class SparklineChart extends StatelessWidget {
                         width: 16,
                         height: 16,
                         decoration: BoxDecoration(
-                          color: Colors.red,
+                          color: AppColors.yellowGreen,
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 3),
                         ),
@@ -446,9 +472,9 @@ class SparklineChart extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Text(
                           _formatMillions(data[minIndex]),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
-                            color: Colors.red,
+                            color: valueColor ?? AppColors.darkGreen,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -461,7 +487,7 @@ class SparklineChart extends StatelessWidget {
                         width: 16,
                         height: 16,
                         decoration: BoxDecoration(
-                          color: Colors.orange,
+                          color: AppColors.orange,
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 3),
                         ),
@@ -475,9 +501,9 @@ class SparklineChart extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Text(
                           _formatMillions(data[maxIndex]),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
-                            color: Colors.orange,
+                            color: valueColor ?? AppColors.darkGreen,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -491,7 +517,7 @@ class SparklineChart extends StatelessWidget {
                         width: 16,
                         height: 16,
                         decoration: BoxDecoration(
-                          color: Colors.red,
+                          color: AppColors.yellowGreen,
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 3),
                         ),
@@ -505,9 +531,9 @@ class SparklineChart extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Text(
                           _formatMillions(data[minIndex]),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
-                            color: Colors.red,
+                            color: valueColor ?? AppColors.darkGreen,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -546,7 +572,7 @@ class SparklineChart extends StatelessWidget {
                   'Lowest:  ' + _formatMillions(minValue),
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width < 500 ? 10 : 11,
-                    color: Colors.red,
+                    color: AppColors.yellowGreen,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -554,7 +580,7 @@ class SparklineChart extends StatelessWidget {
                   'Highest:  ' + _formatMillions(maxValue),
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width < 500 ? 10 : 11,
-                    color: Colors.orange,
+                    color: AppColors.orange,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -573,7 +599,7 @@ class _SparklinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFF0B5E1C)
+      ..color = AppColors.darkGreen
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
     final path = Path();

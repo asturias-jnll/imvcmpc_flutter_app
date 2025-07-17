@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme_colors.dart';
 
 class TopContributorsCard extends StatelessWidget {
   const TopContributorsCard({super.key});
@@ -39,66 +40,91 @@ class TopContributorsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Top Member Contributors',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 20,
-              color: Color(0xFF0B5E1C),
+              color: AppColors.darkGreen,
             ),
           ),
           const SizedBox(height: 16),
-          ...contributors.map(
-            (c) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 7),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: Colors.grey[200],
-                    child: const Icon(Icons.person, color: Color(0xFF0B5E1C)),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          c['name']!,
+          ...contributors.asMap().entries.map((entry) {
+            final c = entry.value;
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 7),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 22,
+                        backgroundColor: Colors.grey[200],
+                        child: Icon(Icons.person, color: AppColors.darkGreen),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              c['name']!,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              c['branch']!,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        c['location']!,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.green,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          c['amount']!,
                           style: const TextStyle(
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 14,
                           ),
                         ),
-                        Text(
-                          c['branch']!,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    c['location']!,
-                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                ),
+                if (entry.key != contributors.length - 1)
+                  Divider(
+                    height: 1,
+                    color: Colors.black12,
+                    indent: 10,
+                    endIndent: 10,
                   ),
-                  const SizedBox(width: 16),
-                  Text(
-                    c['amount']!,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Color(0xFF0B5E1C),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+              ],
+            );
+          }),
         ],
       ),
     );
   }
-} 
+}

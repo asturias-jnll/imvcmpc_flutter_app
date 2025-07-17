@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme_colors.dart';
 
 class MobileMemberList extends StatelessWidget {
   final List<Map<String, dynamic>> contributors;
@@ -26,9 +27,18 @@ class MobileMemberList extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[200]!),
+                color: AppColors.limeGreen.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.limeGreen.withOpacity(0.08),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+                border: Border.all(
+                  color: AppColors.limeGreen.withOpacity(0.18),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,10 +47,10 @@ class MobileMemberList extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 24,
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor: AppColors.green.withOpacity(0.12),
                         child: const Icon(
                           Icons.person,
-                          color: Color(0xFF0B5E1C),
+                          color: AppColors.darkGreen,
                           size: 28,
                         ),
                       ),
@@ -67,7 +77,7 @@ class MobileMemberList extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.edit, color: Color(0xFF0B5E1C)),
+                        icon: const Icon(Icons.edit, color: AppColors.green),
                         onPressed: onEdit != null
                             ? () => onEdit!(c, idx)
                             : null,
@@ -83,35 +93,91 @@ class MobileMemberList extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    'Location: ${c['location']!.toString()}',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF6D6D6D),
-                    ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: AppColors.limeGreen,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        c['location']!.toString(),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.limeGreen,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'Savings: ₱${(c['savings'] as num).toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Color(0xFF0B5E1C),
-                    ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.yellowGreen,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'Savings: ₱${(c['savings'] as num).toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.limeGreen,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'Disb: ₱${(c['disbursement'] as num).toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'Disbursement: ₱${(c['disbursement'] as num).toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Color(0xFF0B5E1C),
+                  const SizedBox(height: 6),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
                     ),
-                  ),
-                  Text(
-                    'Total: ₱${total.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Color(0xFF0B5E1C),
+                    decoration: BoxDecoration(
+                      color: AppColors.green,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'Total: ₱${total.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],
