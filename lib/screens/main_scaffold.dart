@@ -56,14 +56,31 @@ class _MainScaffoldState extends State<MainScaffold> {
               : AppBar(
                   backgroundColor: const Color(0xFF0B5E1C),
                   elevation: 0,
-                  title: const Text(
-                    'IMVCMPC',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20,
-                      letterSpacing: 1,
-                    ),
+                  titleSpacing: 0,
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'IMVCMPC',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/logo.png',
+                            width: 36,
+                            height: 36,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   iconTheme: const IconThemeData(color: Colors.white),
                 ),
@@ -124,30 +141,121 @@ class _MainScaffoldState extends State<MainScaffold> {
                     color: const Color(0xFF0B5E1C),
                     child: Column(
                       children: [
+                        // Account Profile info for mobile drawer (aesthetic, left-aligned, with icons and padding)
                         const SizedBox(height: 36),
-                        const Text(
-                          'IMVCMPC',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 28,
-                            letterSpacing: 2,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Account Profile',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                              SizedBox(height: 18),
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 28,
+                                    backgroundColor: Colors.white,
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 32,
+                                      color: Color(0xFF0B5E1C),
+                                    ),
+                                  ),
+                                  SizedBox(width: 14),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Marketing Clerk',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                      SizedBox(height: 2),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.apartment,
+                                            color: Colors.white70,
+                                            size: 16,
+                                          ),
+                                          SizedBox(width: 5),
+                                          Text(
+                                            'IMVCMPC - Main Branch',
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on,
+                                    color: Colors.white70,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    'Ibaan, Batangas',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.email,
+                                    color: Colors.white70,
+                                    size: 18,
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    'marketingclerk.main@gmail.com',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 28),
+                              // Add cooperative name
+                              Text(
+                                'Ibaan Market Vendors & Community Multi-Purpose Cooperative',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 32),
-                        ListTile(
-                          leading: const Icon(
-                            Icons.settings,
-                            color: Colors.white70,
-                          ),
-                          title: const Text(
-                            'Settings',
-                            style: TextStyle(color: Colors.white70),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                        ),
+                        const Spacer(),
                         ListTile(
                           leading: const Icon(
                             Icons.logout,
@@ -162,8 +270,21 @@ class _MainScaffoldState extends State<MainScaffold> {
                             await showLogoutDialogAndNavigate(context);
                           },
                         ),
-                        const Spacer(),
-                        const SizedBox(height: 24),
+                        // Add IMVCMPC | 2025 at the very bottom, centered, with distinct color
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16, top: 8),
+                          child: Center(
+                            child: Text(
+                              'IMVCMPC | 2025',
+                              style: TextStyle(
+                                color: Color(0xFFB8D53D), // distinct color
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

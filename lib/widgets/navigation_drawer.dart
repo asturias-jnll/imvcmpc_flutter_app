@@ -69,12 +69,17 @@ class NavigationDrawer extends StatelessWidget {
           }),
           const Spacer(),
           ListTile(
-            leading: const Icon(Icons.settings, color: Colors.white70),
+            leading: const Icon(Icons.account_circle, color: Colors.white70),
             title: const Text(
-              'Settings',
+              'Account',
               style: TextStyle(color: Colors.white70),
             ),
-            onTap: () {},
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => const AccountProfileDialog(),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.white70),
@@ -101,4 +106,60 @@ class _NavItem {
   final IconData icon;
   final String label;
   _NavItem(this.icon, this.label);
+}
+
+class AccountProfileDialog extends StatelessWidget {
+  const AccountProfileDialog();
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: const Color(0xFFE9EEF3),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      content: SizedBox(
+        width: 320,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircleAvatar(
+              radius: 36,
+              backgroundColor: Color(0xFF0B5E1C),
+              child: Icon(Icons.person, size: 44, color: Colors.white),
+            ),
+            const SizedBox(height: 18),
+            const Text(
+              'Marketing Clerk',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'IMVCMPC - Main Branch',
+              style: TextStyle(fontSize: 16, color: Colors.black87),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Ibaan, Batangas',
+              style: TextStyle(fontSize: 15, color: Colors.black54),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'marketingclerk.main@gmail.com',
+              style: TextStyle(fontSize: 15, color: Color(0xFF0B5E1C)),
+            ),
+            const SizedBox(height: 18),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0B5E1C),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
