@@ -431,11 +431,59 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   children: [
                                     Expanded(
                                       flex: 2,
-                                      child: StyledDropdown<String>(
-                                        value: selectedBranch,
-                                        items: branches,
-                                        onChanged: (v) =>
-                                            setState(() => selectedBranch = v!),
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth: 320,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Color(0xFF0D5B11),
+                                            width: 2,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            24,
+                                          ),
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 4,
+                                          ),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              value: selectedBranch,
+                                              isExpanded: true,
+                                              icon: const Icon(
+                                                Icons.arrow_drop_down,
+                                                color: Color(0xFF0D5B11),
+                                              ),
+                                              dropdownColor: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(24),
+                                              menuMaxHeight: 260,
+                                              onChanged: (v) {
+                                                setState(() {
+                                                  selectedBranch = v!;
+                                                  branchAmount =
+                                                      getRandomAmount(
+                                                        selectedType,
+                                                      );
+                                                });
+                                              },
+                                              items: branches.map((item) {
+                                                return DropdownMenuItem<String>(
+                                                  value: item,
+                                                  child: Text(
+                                                    item,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                );
+                                              }).toList(),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(width: 8),
@@ -636,29 +684,93 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               Row(
                                 children: [
                                   Expanded(
-                                    child: SizedBox(
-                                      height: 54,
-                                      child: TypeToggleButton(
-                                        label: 'SAVINGS',
-                                        icon: Icons.savings,
-                                        selected: selectedType == 'SAVINGS',
-                                        onTap: () => setState(
-                                          () => selectedType = 'SAVINGS',
+                                    child: GestureDetector(
+                                      onTap: () => setState(
+                                        () => selectedType = 'SAVINGS',
+                                      ),
+                                      child: Container(
+                                        height: 44,
+                                        decoration: BoxDecoration(
+                                          color: selectedType == 'SAVINGS'
+                                              ? Color(0xFF0D5B11)
+                                              : Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            24,
+                                          ),
+                                          border: Border.all(
+                                            color: Color(0xFF0D5B11),
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.savings,
+                                              color: selectedType == 'SAVINGS'
+                                                  ? Colors.white
+                                                  : Color(0xFF0D5B11),
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              'SAVINGS',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: selectedType == 'SAVINGS'
+                                                    ? Colors.white
+                                                    : Color(0xFF0D5B11),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
-                                    child: SizedBox(
-                                      height: 54,
-                                      child: TypeToggleButton(
-                                        label: 'DISBURSEMENT',
-                                        icon: Icons.payments,
-                                        selected:
-                                            selectedType == 'DISBURSEMENT',
-                                        onTap: () => setState(
-                                          () => selectedType = 'DISBURSEMENT',
+                                    child: GestureDetector(
+                                      onTap: () => setState(
+                                        () => selectedType = 'DISBURSEMENT',
+                                      ),
+                                      child: Container(
+                                        height: 44,
+                                        decoration: BoxDecoration(
+                                          color: selectedType == 'DISBURSEMENT'
+                                              ? Color(0xFFB8D53D)
+                                              : Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            24,
+                                          ),
+                                          border: Border.all(
+                                            color: Color(0xFFB8D53D),
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.payments,
+                                              color:
+                                                  selectedType == 'DISBURSEMENT'
+                                                  ? Colors.white
+                                                  : Color(0xFFB8D53D),
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              'DISBURSEMENT',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color:
+                                                    selectedType ==
+                                                        'DISBURSEMENT'
+                                                    ? Colors.white
+                                                    : Color(0xFFB8D53D),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -832,23 +944,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(
-                                  0xFF0B5E1C,
-                                ).withOpacity(0.5),
-                                foregroundColor: Colors.black,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 18,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                elevation: 0,
+                            child: ElevatedButton.icon(
+                              icon: const Icon(
+                                Icons.download,
+                                color: Colors.white,
                               ),
-                              onPressed: () =>
-                                  _showDownloadProgressDialog(context),
-                              child: const Text(
+                              label: const Text(
                                 'DOWNLOAD REPORT AS PDF',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -856,6 +957,23 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   letterSpacing: 1,
                                 ),
                               ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF0D5B11),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                  horizontal: 20,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                elevation: 2,
+                                shadowColor: const Color(
+                                  0xFFB2E5B2,
+                                ).withOpacity(0.18),
+                              ),
+                              onPressed: () =>
+                                  _showDownloadProgressDialog(context),
                             ),
                           ),
                         ),
