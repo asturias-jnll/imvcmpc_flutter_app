@@ -977,6 +977,124 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             ),
                           ),
                         ),
+                        // MOBILE VIEW: Place below the download button
+                        if (isMobile) ...[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton.icon(
+                                icon: Icon(
+                                  Icons.clear,
+                                  color: Color(0xFF0B5E1C),
+                                  size: 20,
+                                ),
+                                label: Text(
+                                  'CLEAR',
+                                  style: TextStyle(
+                                    color: Color(0xFF0B5E1C),
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
+                                    letterSpacing: 1.1,
+                                  ),
+                                ),
+                                style:
+                                    OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                        color: Color(0xFF0B5E1C),
+                                        width: 1.5,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(22),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                      backgroundColor: Colors.white,
+                                    ).copyWith(
+                                      overlayColor:
+                                          MaterialStateProperty.resolveWith<
+                                            Color?
+                                          >((Set<MaterialState> states) {
+                                            if (states.contains(
+                                                  MaterialState.pressed,
+                                                ) ||
+                                                states.contains(
+                                                  MaterialState.hovered,
+                                                )) {
+                                              return Color(
+                                                0xFFB8D53D,
+                                              ).withOpacity(0.10);
+                                            }
+                                            return null;
+                                          }),
+                                    ),
+                                onPressed: _clearFilters,
+                              ),
+                            ),
+                          ),
+                        ],
+                        // DESKTOP/TABLET VIEW: Place below the report card, left-aligned, compact
+                        if (!isMobile) ...[
+                          const SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: OutlinedButton.icon(
+                              icon: Icon(
+                                Icons.clear,
+                                color: Color(0xFF0B5E1C),
+                                size: 18,
+                              ),
+                              label: Text(
+                                'CLEAR',
+                                style: TextStyle(
+                                  color: Color(0xFF0B5E1C),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                  letterSpacing: 1.1,
+                                ),
+                              ),
+                              style:
+                                  OutlinedButton.styleFrom(
+                                    minimumSize: Size(90, 32),
+                                    side: BorderSide(
+                                      color: Color(0xFF0B5E1C),
+                                      width: 1.5,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 6,
+                                      horizontal: 16,
+                                    ),
+                                    backgroundColor: Colors.white,
+                                    textStyle: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ).copyWith(
+                                    overlayColor:
+                                        MaterialStateProperty.resolveWith<
+                                          Color?
+                                        >((Set<MaterialState> states) {
+                                          if (states.contains(
+                                                MaterialState.pressed,
+                                              ) ||
+                                              states.contains(
+                                                MaterialState.hovered,
+                                              )) {
+                                            return Color(
+                                              0xFFB8D53D,
+                                            ).withOpacity(0.10);
+                                          }
+                                          return null;
+                                        }),
+                                  ),
+                              onPressed: _clearFilters,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   )
@@ -1828,6 +1946,67 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                               ],
                                             ),
                                     ),
+                                    const SizedBox(height: 10),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: OutlinedButton.icon(
+                                        icon: Icon(
+                                          Icons.clear,
+                                          color: Color(0xFF0B5E1C),
+                                          size: 18,
+                                        ),
+                                        label: Text(
+                                          'CLEAR',
+                                          style: TextStyle(
+                                            color: Color(0xFF0B5E1C),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 13,
+                                            letterSpacing: 1.1,
+                                          ),
+                                        ),
+                                        style:
+                                            OutlinedButton.styleFrom(
+                                              minimumSize: Size(90, 32),
+                                              side: BorderSide(
+                                                color: Color(0xFF0B5E1C),
+                                                width: 1.5,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(18),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 6,
+                                                horizontal: 16,
+                                              ),
+                                              backgroundColor: Colors.white,
+                                              textStyle: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ).copyWith(
+                                              overlayColor:
+                                                  MaterialStateProperty.resolveWith<
+                                                    Color?
+                                                  >((
+                                                    Set<MaterialState> states,
+                                                  ) {
+                                                    if (states.contains(
+                                                          MaterialState.pressed,
+                                                        ) ||
+                                                        states.contains(
+                                                          MaterialState.hovered,
+                                                        )) {
+                                                      return Color(
+                                                        0xFFB8D53D,
+                                                      ).withOpacity(0.10);
+                                                    }
+                                                    return null;
+                                                  }),
+                                            ),
+                                        onPressed: _clearFilters,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -2007,6 +2186,24 @@ class _ReportsScreenState extends State<ReportsScreen> {
         selectableDayPredicate: (date) => true,
       ),
     );
+  }
+
+  void _clearFilters() {
+    setState(() {
+      selectedType = 'Select Type';
+      selectedDate = null;
+      searchMemberController.clear();
+      amountController.clear();
+      selectedMember = null;
+      branchAmount = null;
+      if (selectedOption == 'Member') {
+        // Only clear member-related fields
+      } else if (selectedOption == 'Branch') {
+        selectedBranch = 'Select Branch';
+        selectedMonth = 'Select Month';
+        selectedYear = 'Select Year';
+      }
+    });
   }
 
   void _showDownloadProgressDialog(BuildContext context) async {
