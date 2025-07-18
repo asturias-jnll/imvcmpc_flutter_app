@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/ai_recommendation_card.dart';
 import '../widgets/chart_card.dart';
+import '../widgets/swipeable_charts_carousel.dart';
 import '../widgets/top_contributors_card.dart';
 import '../widgets/top_branches_card.dart';
 import '../widgets/filter_button.dart';
@@ -80,80 +81,8 @@ class DashboardScreen extends StatelessWidget {
                       SizedBox(height: 18),
                       const AIRecommendationCard(),
                       SizedBox(height: 24),
-                      // Charts
-                      ChartCard(
-                        title: 'Monthly\nSavings per Branch',
-                        barHeights: [
-                          80,
-                          110,
-                          70,
-                          100,
-                          120,
-                          90,
-                          115,
-                          85,
-                          105,
-                          75,
-                          95,
-                          100,
-                        ],
-                        barLabels: [
-                          'Jan',
-                          'Feb',
-                          'Mar',
-                          'Apr',
-                          'May',
-                          'Jun',
-                          'Jul',
-                          'Aug',
-                          'Sep',
-                          'Oct',
-                          'Nov',
-                          'Dec',
-                        ],
-                        barGradient: const LinearGradient(
-                          colors: [AppColors.darkGreen, AppColors.limeGreen],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                        ),
-                      ),
-                      SizedBox(height: 18),
-                      ChartCard(
-                        title: 'Monthly\nDisbursements per Branch',
-                        barHeights: [
-                          60,
-                          90,
-                          80,
-                          110,
-                          70,
-                          100,
-                          120,
-                          90,
-                          115,
-                          85,
-                          95,
-                          105,
-                        ],
-                        barLabels: [
-                          'Jan',
-                          'Feb',
-                          'Mar',
-                          'Apr',
-                          'May',
-                          'Jun',
-                          'Jul',
-                          'Aug',
-                          'Sep',
-                          'Oct',
-                          'Nov',
-                          'Dec',
-                        ],
-                        barGradient: const LinearGradient(
-                          colors: [AppColors.green, AppColors.yellowGreen],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                        ),
-                      ),
+                      // Swipeable Charts Carousel
+                      const SwipeableChartsCarousel(),
                       SizedBox(height: 18),
                       ChartCard(
                         title: 'Annual\nSavings per Branch',

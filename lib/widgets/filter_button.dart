@@ -5,11 +5,13 @@ class FilterButton extends StatelessWidget {
   final List<String>? options;
   final void Function(String)? onSelected;
   final bool noRightMargin;
+  final IconData? icon;
   const FilterButton({
     required this.label,
     this.options,
     this.onSelected,
     this.noRightMargin = false,
+    this.icon,
     super.key,
   });
   @override
@@ -49,6 +51,7 @@ class FilterButton extends StatelessWidget {
       margin: noRightMargin
           ? EdgeInsets.zero
           : const EdgeInsets.only(right: 12),
+      constraints: const BoxConstraints(minWidth: 120),
       child: PopupMenuButton<String>(
         tooltip: label,
         onSelected: onSelected ?? (value) => print('Selected: $value'),
@@ -101,13 +104,26 @@ class FilterButton extends StatelessWidget {
             border: Border.all(color: const Color(0xFFE0E0E0)),
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.tune, color: Color(0xFF0B5E1C)),
-              const SizedBox(width: 8),
-              Text(label, style: const TextStyle(color: Color(0xFF0B5E1C))),
+              Icon(
+                icon ?? Icons.tune,
+                color: const Color(0xFF0B5E1C),
+                size: 20,
+              ),
+              const SizedBox(width: 7),
+              Flexible(
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    color: Color(0xFF0B5E1C),
+                    fontSize: 15,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
         ),

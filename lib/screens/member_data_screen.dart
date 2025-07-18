@@ -489,6 +489,108 @@ class _MemberDataScreenState extends State<MemberDataScreen> {
     }
   }
 
+  Widget _buildSortButton(String label, IconData icon, String sortValue) {
+    final isSelected = sortBy == sortValue;
+    return GestureDetector(
+      onTap: () => setState(() => sortBy = sortValue),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF0B5E1C) : Colors.grey[100],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? const Color(0xFF0B5E1C) : Colors.grey[300]!,
+            width: 1,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? Colors.white : Colors.grey[600],
+              size: 18,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.grey[600],
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showBranchFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => Theme(
+        data: Theme.of(context).copyWith(
+          splashFactory: NoSplash.splashFactory,
+          highlightColor: Colors.transparent,
+        ),
+        child: AlertDialog(
+          title: const Text('Select Branch'),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 300, // Fixed height to prevent long dialog
+            child: Scrollbar(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: branchOptions.length,
+                itemBuilder: (context, index) {
+                  final branch = branchOptions[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      if (mounted) {
+                        setState(() {
+                          selectedBranch = branch;
+                        });
+                      }
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      child: Text(
+                        branch,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF0B5E1C),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
+              ),
+              child: const Text('Cancel'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showSuccessDialog(String message) {
     showDialog(
       context: context,
@@ -553,469 +655,525 @@ class _MemberDataScreenState extends State<MemberDataScreen> {
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
-    return Scaffold(
-      backgroundColor: const Color(0xFFE9EEF3),
-      body: Stack(
-        children: [
-          LayoutBuilder(
-            builder: (context, constraints) {
-              if (isMobile) {
-                // --- MOBILE LAYOUT ---
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 32,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // 1. Top Row: Finance Officer Bar on the right in white container
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(18),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        child: Row(
-                          children: [const Spacer(), const UserProfileBar()],
-                        ),
-                      ),
-                      const SizedBox(height: 18),
-                      // 2. Title
-                      Padding(
-                        padding: EdgeInsets.zero,
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+    return Theme(
+      data: Theme.of(context).copyWith(
+        splashFactory: NoSplash.splashFactory,
+        highlightColor: Colors.transparent,
+      ),
+      child: Scaffold(
+        backgroundColor: const Color(0xFFE9EEF3),
+        body: Stack(
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) {
+                if (isMobile) {
+                  // --- MOBILE LAYOUT ---
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 32,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 1. Top Row: Finance Officer Bar on the right in white container
+                        Container(
                           decoration: BoxDecoration(
-                            color: Color(0x800B5E1C),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'MEMBER CONTRIBUTORS',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontSize: 18,
-                              letterSpacing: 1.1,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 18),
-                      // 3. Search (full width)
-                      TextField(
-                        controller: searchController,
-                        onChanged: (value) =>
-                            setState(() => searchQuery = value),
-                        decoration: InputDecoration(
-                          hintText: 'Search by name',
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: const Color(0xFF0B5E1C),
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 14,
-                            horizontal: 18,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: const Color(0xFF0B5E1C),
-                              width: 1.5,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: const Color(0xFF0B5E1C).withOpacity(0.5),
-                              width: 1.2,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: BorderSide(
-                              color: const Color(0xFF0B5E1C),
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 10),
-                      // 4. Sort and Branch Filter Row
-                      Row(
-                        children: [
-                          // Sort
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(
-                                color: const Color(0xFF0B5E1C),
-                                width: 1.2,
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
                               ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          child: Row(
+                            children: [const Spacer(), const UserProfileBar()],
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        // 2. Title
+                        Padding(
+                          padding: EdgeInsets.zero,
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  const Color(0xFF0B5E1C),
+                                  const Color(0xFF69B41E),
+                                ],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
                                   color: const Color(
                                     0xFF0B5E1C,
-                                  ).withOpacity(0.06),
-                                  blurRadius: 4,
+                                  ).withOpacity(0.2),
+                                  blurRadius: 8,
                                   offset: const Offset(0, 2),
                                 ),
                               ],
                             ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: sortBy,
-                                dropdownColor: Colors.white,
-                                icon: const Icon(
-                                  Icons.arrow_drop_down,
-                                  color: Color(0xFF0B5E1C),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.people,
+                                  color: Colors.white,
+                                  size: 20,
                                 ),
-                                style: const TextStyle(
-                                  color: Color(0xFF0B5E1C),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                const SizedBox(width: 8),
+                                const Text(
+                                  'MEMBER CONTRIBUTORS',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    letterSpacing: 1.2,
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(24),
-                                items:
-                                    [
-                                      'Total',
-                                      'Branch',
-                                      'Savings',
-                                      'Disbursement',
-                                    ].map((option) {
-                                      final selected = sortBy == option;
-                                      return DropdownMenuItem(
-                                        value: option,
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 8,
-                                            horizontal: 18,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: selected
-                                                ? const Color(
-                                                    0xFFB8D53D,
-                                                  ).withOpacity(0.18)
-                                                : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(
-                                              22,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            option,
-                                            style: TextStyle(
-                                              color: selected
-                                                  ? const Color(0xFF0B5E1C)
-                                                  : Colors.black87,
-                                              fontWeight: selected
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                onChanged: (val) =>
-                                    setState(() => sortBy = val!),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        // 3. Modern Pill-Shaped Search Field
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
                               ),
-                            ),
+                            ],
                           ),
-                          const SizedBox(width: 10),
-                          // Branch Filter
-                          Expanded(
-                            child: FilterButton(
-                              label: selectedBranch ?? 'Filter by branch',
-                              options: branchOptions,
-                              onSelected: (value) {
-                                setState(() {
-                                  selectedBranch = value;
-                                });
-                              },
-                              noRightMargin: true,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-                      // Member List inside white container (no header)
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 18,
-                          horizontal: 0,
-                        ),
-                        child: MobileMemberList(
-                          contributors: filteredContributors,
-                          onEdit: (member, idx) =>
-                              _showMemberDialog(member: member, index: idx),
-                          onDelete: (idx) => _confirmDeleteMember(idx),
-                          edgeToEdgeHeader: false,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                // --- DESKTOP/TABLET LAYOUT (filter left, profile bar right) ---
-                return SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isMobile ? 16 : 40,
-                    vertical: 32,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // 1. Top bar: white container with filter (left) and profile bar (right)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(18),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isMobile ? 16 : 28,
-                          vertical: 16,
-                        ),
-                        margin: const EdgeInsets.only(bottom: 24),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            FilterButton(
-                              label: selectedBranch ?? 'Filter by branch',
-                              options: branchOptions,
-                              onSelected: (value) {
-                                setState(() {
-                                  selectedBranch = value;
-                                });
-                              },
-                              noRightMargin: true,
-                            ),
-                            const Spacer(),
-                            const UserProfileBar(),
-                          ],
-                        ),
-                      ),
-                      // 2. Title and search/sort row
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Title on the left
-                          const Text(
-                            'Member Contributors',
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF0B5E1C),
-                            ),
-                          ),
-                          const Spacer(),
-                          // Search and sort on the right
-                          SizedBox(
-                            width: 220,
-                            child: TextField(
-                              controller: searchController,
-                              onChanged: (value) =>
-                                  setState(() => searchQuery = value),
-                              decoration: InputDecoration(
-                                hintText: 'Search by name',
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: Color(0xFF0B5E1C),
-                                ),
-                                filled: true,
-                                fillColor: Colors.white,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                  horizontal: 18,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFF0B5E1C),
-                                    width: 1.5,
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFF0B5E1C).withOpacity(0.5),
-                                    width: 1.2,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                  borderSide: BorderSide(
-                                    color: Color(0xFF0B5E1C),
-                                    width: 2,
-                                  ),
-                                ),
+                          child: TextField(
+                            controller: searchController,
+                            onChanged: (value) =>
+                                setState(() => searchQuery = value),
+                            decoration: InputDecoration(
+                              hintText: 'Search member...',
+                              hintStyle: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 16,
                               ),
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          SizedBox(
-                            height: 48,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: const Color(0xFF0B5E1C),
+                                size: 22,
+                              ),
+                              suffixIcon: searchController.text.isNotEmpty
+                                  ? IconButton(
+                                      icon: Icon(
+                                        Icons.clear,
+                                        color: Colors.grey[600],
+                                        size: 20,
+                                      ),
+                                      onPressed: () {
+                                        searchController.clear();
+                                        setState(() => searchQuery = '');
+                                      },
+                                    )
+                                  : null,
+                              filled: true,
+                              fillColor: Colors.white,
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 20,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                borderSide: BorderSide.none,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                borderSide: BorderSide(
                                   color: const Color(0xFF0B5E1C),
-                                  width: 1.2,
+                                  width: 2,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(
-                                      0xFF0B5E1C,
-                                    ).withOpacity(0.06),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
+                              ),
+                            ),
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        // 4. Branch Filter Chip
+                        Container(
+                          width: double.infinity,
+                          child: GestureDetector(
+                            onTap: () => _showBranchFilterDialog(),
+                            behavior: HitTestBehavior.opaque,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    selectedBranch != null &&
+                                        selectedBranch != 'All Branches'
+                                    ? const Color(0xFF0B5E1C)
+                                    : Colors.grey[200],
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color:
+                                      selectedBranch != null &&
+                                          selectedBranch != 'All Branches'
+                                      ? const Color(0xFF0B5E1C)
+                                      : (Colors.grey[300] ?? Colors.grey),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.location_on,
+                                    color:
+                                        selectedBranch != null &&
+                                            selectedBranch != 'All Branches'
+                                        ? Colors.white
+                                        : Colors.grey[600],
+                                    size: 18,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    selectedBranch ?? 'Filter by Branch',
+                                    style: TextStyle(
+                                      color:
+                                          selectedBranch != null &&
+                                              selectedBranch != 'All Branches'
+                                          ? Colors.white
+                                          : Colors.grey[600],
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    color:
+                                        selectedBranch != null &&
+                                            selectedBranch != 'All Branches'
+                                        ? Colors.white
+                                        : Colors.grey[600],
+                                    size: 18,
                                   ),
                                 ],
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: sortBy,
-                                  dropdownColor: Colors.white,
-                                  icon: const Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Color(0xFF0B5E1C),
-                                  ),
-                                  style: const TextStyle(
-                                    color: Color(0xFF0B5E1C),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                  borderRadius: BorderRadius.circular(24),
-                                  items:
-                                      [
-                                        'Total',
-                                        'Branch',
-                                        'Savings',
-                                        'Disbursement',
-                                      ].map((option) {
-                                        final selected = sortBy == option;
-                                        return DropdownMenuItem(
-                                          value: option,
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 8,
-                                              horizontal: 18,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: selected
-                                                  ? const Color(
-                                                      0xFFB8D53D,
-                                                    ).withOpacity(0.18)
-                                                  : Colors.transparent,
-                                              borderRadius:
-                                                  BorderRadius.circular(22),
-                                            ),
-                                            child: Text(
-                                              option,
-                                              style: TextStyle(
-                                                color: selected
-                                                    ? const Color(0xFF0B5E1C)
-                                                    : Colors.black87,
-                                                fontWeight: selected
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }).toList(),
-                                  onChanged: (val) =>
-                                      setState(() => sortBy = val!),
-                                ),
-                              ),
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 18),
-                      // 3. Member List Table
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
+                        ),
+                        const SizedBox(height: 12),
+                        // 5. Icon-Based Sort Buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildSortButton('Total', Icons.calculate, 'Total'),
+                            _buildSortButton(
+                              'Branch',
+                              Icons.location_on,
+                              'Branch',
+                            ),
+                            _buildSortButton(
+                              'Savings',
+                              Icons.trending_up,
+                              'Savings',
+                            ),
+                            _buildSortButton(
+                              'Disbursement',
+                              Icons.trending_down,
+                              'Disbursement',
                             ),
                           ],
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 18,
-                          horizontal: 0,
+                        const SizedBox(height: 14),
+                        // Member List inside white container (no header)
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 18,
+                            horizontal: 0,
+                          ),
+                          child: MobileMemberList(
+                            contributors: filteredContributors,
+                            onEdit: (member, idx) =>
+                                _showMemberDialog(member: member, index: idx),
+                            onDelete: (idx) => _confirmDeleteMember(idx),
+                            edgeToEdgeHeader: false,
+                          ),
                         ),
-                        child: DesktopMemberTable(
-                          contributors: filteredContributors,
-                          onEdit: (member, idx) =>
-                              _showMemberDialog(member: member, index: idx),
-                          onDelete: (idx) => _confirmDeleteMember(idx),
+                      ],
+                    ),
+                  );
+                } else {
+                  // --- DESKTOP/TABLET LAYOUT (filter left, profile bar right) ---
+                  return SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isMobile ? 16 : 40,
+                      vertical: 32,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 1. Top bar: white container with filter (left) and profile bar (right)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 16 : 28,
+                            vertical: 16,
+                          ),
+                          margin: const EdgeInsets.only(bottom: 24),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              FilterButton(
+                                label: selectedBranch ?? 'Filter by branch',
+                                options: branchOptions,
+                                onSelected: (value) {
+                                  setState(() {
+                                    selectedBranch = value;
+                                  });
+                                },
+                                noRightMargin: true,
+                              ),
+                              const Spacer(),
+                              const UserProfileBar(),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-            },
+                        // 2. Title and search/sort row
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Title on the left
+                            const Text(
+                              'Member Contributors',
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF0B5E1C),
+                              ),
+                            ),
+                            const Spacer(),
+                            // Search and sort on the right
+                            SizedBox(
+                              width: 180,
+                              height: 40,
+                              child: TextField(
+                                controller: searchController,
+                                onChanged: (value) =>
+                                    setState(() => searchQuery = value),
+                                decoration: InputDecoration(
+                                  hintText: 'Search member...',
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: Color(0xFF0B5E1C),
+                                    size: 18,
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 14,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFF0B5E1C),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFF0B5E1C).withOpacity(0.5),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: BorderSide(
+                                      color: Color(0xFF0B5E1C),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                ),
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            SizedBox(
+                              width: 180,
+                              height: 40,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: const Color(0xFF0B5E1C),
+                                    width: 1.0,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(
+                                        0xFF0B5E1C,
+                                      ).withOpacity(0.06),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: sortBy,
+                                    dropdownColor: Colors.white,
+                                    icon: const Icon(
+                                      Icons.arrow_drop_down,
+                                      color: Color(0xFF0B5E1C),
+                                      size: 18,
+                                    ),
+                                    style: const TextStyle(
+                                      color: Color(0xFF0B5E1C),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                    items:
+                                        [
+                                          'Total',
+                                          'Branch',
+                                          'Savings',
+                                          'Disbursement',
+                                        ].map((option) {
+                                          final selected = sortBy == option;
+                                          return DropdownMenuItem(
+                                            value: option,
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 6,
+                                                    horizontal: 14,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: selected
+                                                    ? const Color(
+                                                        0xFFB8D53D,
+                                                      ).withOpacity(0.18)
+                                                    : Colors.transparent,
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                              ),
+                                              child: Text(
+                                                option,
+                                                style: TextStyle(
+                                                  color: selected
+                                                      ? const Color(0xFF0B5E1C)
+                                                      : Colors.black87,
+                                                  fontWeight: selected
+                                                      ? FontWeight.bold
+                                                      : FontWeight.normal,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                    onChanged: (val) =>
+                                        setState(() => sortBy = val!),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 18),
+                        // 3. Member List Table
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 18,
+                            horizontal: 0,
+                          ),
+                          child: DesktopMemberTable(
+                            contributors: filteredContributors,
+                            onEdit: (member, idx) =>
+                                _showMemberDialog(member: member, index: idx),
+                            onDelete: (idx) => _confirmDeleteMember(idx),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color(0xFF0B5E1C),
+          foregroundColor: Colors.white,
+          onPressed: () => _showMemberDialog(),
+          child: const Icon(Icons.add),
+          tooltip: 'Add Member',
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-        ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF0B5E1C),
-        foregroundColor: Colors.white,
-        onPressed: () => _showMemberDialog(),
-        child: const Icon(Icons.add),
-        tooltip: 'Add Member',
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

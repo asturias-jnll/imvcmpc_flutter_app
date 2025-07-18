@@ -109,7 +109,7 @@ class _MemberFormDialogState extends State<MemberFormDialog> {
                   ),
                   child: Center(
                     child: Text(
-                      widget.isEdit ? 'Edit Member' : 'Add Member',
+                      widget.isEdit ? 'Update Record' : 'Add Member',
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
