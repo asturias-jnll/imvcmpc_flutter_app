@@ -1,6 +1,6 @@
 {
-    "name": "imvcmc_dashboard",
-    "short_name": "imvcmc_dashboard",
+    "name": "IMVCMPC",
+    "short_name": "IMVCMPC",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

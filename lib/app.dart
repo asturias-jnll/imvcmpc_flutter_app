@@ -7,7 +7,7 @@ class IMVCMPCDashboardApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'IMVCMPC Dashboard',
+      title: 'IMVCMPC',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFF0B5E1C),
