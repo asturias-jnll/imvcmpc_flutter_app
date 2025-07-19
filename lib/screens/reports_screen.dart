@@ -5,6 +5,7 @@ import '../widgets/styled_dropdown.dart';
 import '../widgets/reports_summary_row.dart';
 import '../widgets/type_toggle_button.dart';
 import 'dart:math';
+import 'dart:async';
 import '../member_data.dart';
 
 class ReportsScreen extends StatefulWidget {
@@ -14,6 +15,9 @@ class ReportsScreen extends StatefulWidget {
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
+  Timer? _timer;
+  DateTime _currentTime = DateTime.now();
+
   final branches = [
     'Select Branch',
     'Branch 1 - IBAAN',
@@ -58,6 +62,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
   String selectedYear = 'Select Year';
   TextEditingController searchMemberController = TextEditingController();
   TextEditingController amountController = TextEditingController();
+  FocusNode searchFocusNode = FocusNode();
+  GlobalKey autocompleteKey = GlobalKey();
 
   Map<String, dynamic>? selectedMember;
 
@@ -90,7 +96,97 @@ class _ReportsScreenState extends State<ReportsScreen> {
     }
   }
 
+  // Helper method to get available years based on selected month
+  List<String> getAvailableYears(String selectedMonth) {
+    final currentDate = DateTime.now();
+    final currentYear = currentDate.year;
+    final currentMonth = currentDate.month;
+
+    // Define month numbers (1-12)
+    final monthNumbers = {
+      'January': 1,
+      'February': 2,
+      'March': 3,
+      'April': 4,
+      'May': 5,
+      'June': 6,
+      'July': 7,
+      'August': 8,
+      'September': 9,
+      'October': 10,
+      'November': 11,
+      'December': 12,
+    };
+
+    final selectedMonthNumber = monthNumbers[selectedMonth];
+
+    if (selectedMonthNumber == null) {
+      // If no month is selected, return all years
+      return [
+        'Select Year',
+        ...List.generate(10, (i) => (currentYear - i).toString()),
+      ];
+    }
+
+    // If selected month is in the future (August-December 2025), exclude 2025
+    if (selectedMonthNumber >= 8 && currentYear == 2025) {
+      return [
+        'Select Year',
+        ...List.generate(9, (i) => (currentYear - 1 - i).toString()),
+      ];
+    }
+
+    // For past months or current month, include current year
+    return [
+      'Select Year',
+      ...List.generate(10, (i) => (currentYear - i).toString()),
+    ];
+  }
+
   double? branchAmount;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      setState(() {
+        _currentTime = DateTime.now();
+      });
+    });
+
+    // Validate year selection on init
+    _validateYearSelection();
+    // Validate date selection on init
+    _validateDateSelection();
+  }
+
+  // Validate and reset year selection if invalid
+  void _validateYearSelection() {
+    final availableYears = getAvailableYears(selectedMonth);
+    if (selectedYear != 'Select Year' &&
+        !availableYears.contains(selectedYear)) {
+      setState(() {
+        selectedYear = 'Select Year';
+      });
+    }
+  }
+
+  // Validate and reset date selection if invalid (future date)
+  void _validateDateSelection() {
+    final now = DateTime.now();
+    if (selectedDate != null && selectedDate!.isAfter(now)) {
+      setState(() {
+        selectedDate = now;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    searchFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -281,12 +377,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               if (selectedOption == 'Member') ...[
                                 // Member autocomplete
                                 Autocomplete<String>(
+                                  key: autocompleteKey,
                                   optionsBuilder:
                                       (TextEditingValue textEditingValue) {
                                         if (textEditingValue.text == '') {
                                           return const Iterable<String>.empty();
                                         }
-                                        return allContributors
+                                        final suggestions = allContributors
                                             .map((m) => m['name'] as String)
                                             .where(
                                               (name) =>
@@ -294,7 +391,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                                     textEditingValue.text
                                                         .toLowerCase(),
                                                   ),
-                                            );
+                                            )
+                                            .toList();
+                                        print(
+                                          'Autocomplete suggestions: $suggestions',
+                                        ); // Debug
+                                        return suggestions;
                                       },
                                   onSelected: (String selection) {
                                     setState(() {
@@ -543,6 +645,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                         onChanged: (v) {
                                           setState(() {
                                             selectedMonth = v!;
+                                            // Reset year when month changes to ensure valid selection
+                                            selectedYear = 'Select Year';
                                             branchAmount = getRandomAmount(
                                               selectedType,
                                             );
@@ -595,15 +699,18 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                         dropdownColor: Colors.white,
                                         borderRadius: BorderRadius.circular(24),
                                         menuMaxHeight: 260,
-                                        items: years.map((year) {
-                                          return DropdownMenuItem<String>(
-                                            value: year,
-                                            child: Text(
-                                              year,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          );
-                                        }).toList(),
+                                        items: getAvailableYears(selectedMonth)
+                                            .map((year) {
+                                              return DropdownMenuItem<String>(
+                                                value: year,
+                                                child: Text(
+                                                  year,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              );
+                                            })
+                                            .toList(),
                                         onChanged: (v) {
                                           setState(() {
                                             selectedYear = v!;
@@ -653,7 +760,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                       context: context,
                                       initialDate: selectedDate ?? now,
                                       firstDate: DateTime(2020),
-                                      lastDate: DateTime(now.year + 2),
+                                      lastDate:
+                                          now, // Only allow past and current dates
                                       builder: (context, child) {
                                         return Theme(
                                           data: Theme.of(context).copyWith(
@@ -688,7 +796,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                       onTap: () => setState(() {
                                         selectedType = 'SAVINGS';
                                         if (selectedOption == 'Branch') {
-                                          branchAmount = getRandomAmount('SAVINGS');
+                                          branchAmount = getRandomAmount(
+                                            'SAVINGS',
+                                          );
                                         }
                                       }),
                                       child: Container(
@@ -736,7 +846,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                       onTap: () => setState(() {
                                         selectedType = 'DISBURSEMENT';
                                         if (selectedOption == 'Branch') {
-                                          branchAmount = getRandomAmount('DISBURSEMENT');
+                                          branchAmount = getRandomAmount(
+                                            'DISBURSEMENT',
+                                          );
                                         }
                                       }),
                                       child: Container(
@@ -822,11 +934,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                           _SummaryRow(
                                             icon: Icons.calendar_today,
                                             label: 'Date',
-                                            value: selectedDate == null
-                                                ? '-'
-                                                : DateFormat(
-                                                    'MMMM d, yyyy',
-                                                  ).format(selectedDate!),
+                                            value: DateFormat(
+                                              'MMMM d, yyyy',
+                                            ).format(DateTime.now()),
+                                            iconBg: Color(0xFFB8D53D),
+                                          ),
+                                          _SummaryRow(
+                                            icon: Icons.access_time,
+                                            label: 'Time',
+                                            value: DateFormat(
+                                              'HH:mm:ss',
+                                            ).format(_currentTime),
                                             iconBg: Color(0xFFB8D53D),
                                           ),
                                           _SummaryRow(
@@ -891,11 +1009,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                           _SummaryRow(
                                             icon: Icons.calendar_today,
                                             label: 'Date',
-                                            value: selectedDate == null
-                                                ? '-'
-                                                : DateFormat(
-                                                    'MMMM d, yyyy',
-                                                  ).format(selectedDate!),
+                                            value: DateFormat(
+                                              'MMMM d, yyyy',
+                                            ).format(DateTime.now()),
+                                            iconBg: Color(0xFFB8D53D),
+                                          ),
+                                          _SummaryRow(
+                                            icon: Icons.access_time,
+                                            label: 'Time',
+                                            value: DateFormat(
+                                              'HH:mm:ss',
+                                            ).format(_currentTime),
                                             iconBg: Color(0xFFB8D53D),
                                           ),
                                           _SummaryRow(
@@ -1285,6 +1409,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                     // Autocomplete for Search Member (only for Member selection)
                                     if (selectedOption == 'Member')
                                       Autocomplete<String>(
+                                        key: autocompleteKey,
                                         optionsBuilder:
                                             (
                                               TextEditingValue textEditingValue,
@@ -1294,7 +1419,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                                   String
                                                 >.empty();
                                               }
-                                              return allContributors
+                                              final suggestions = allContributors
                                                   .map(
                                                     (m) => m['name'] as String,
                                                   )
@@ -1305,7 +1430,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                                           textEditingValue.text
                                                               .toLowerCase(),
                                                         ),
-                                                  );
+                                                  )
+                                                  .toList();
+                                              print(
+                                                'Desktop autocomplete suggestions: $suggestions',
+                                              ); // Debug
+                                              return suggestions;
                                             },
                                         onSelected: (String selection) {
                                           setState(() {
@@ -1578,6 +1708,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                               onChanged: (v) {
                                                 setState(() {
                                                   selectedMonth = v!;
+                                                  // Reset year when month changes to ensure valid selection
+                                                  selectedYear = 'Select Year';
                                                   branchAmount =
                                                       getRandomAmount(
                                                         selectedType,
@@ -1640,16 +1772,21 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                               borderRadius:
                                                   BorderRadius.circular(24),
                                               menuMaxHeight: 260,
-                                              items: years.map((year) {
-                                                return DropdownMenuItem<String>(
-                                                  value: year,
-                                                  child: Text(
-                                                    year,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                );
-                                              }).toList(),
+                                              items:
+                                                  getAvailableYears(
+                                                    selectedMonth,
+                                                  ).map((year) {
+                                                    return DropdownMenuItem<
+                                                      String
+                                                    >(
+                                                      value: year,
+                                                      child: Text(
+                                                        year,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    );
+                                                  }).toList(),
                                               onChanged: (v) {
                                                 setState(() {
                                                   selectedYear = v!;
@@ -1673,7 +1810,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                             onTap: () => setState(() {
                                               selectedType = 'SAVINGS';
                                               if (selectedOption == 'Branch') {
-                                                branchAmount = getRandomAmount('SAVINGS');
+                                                branchAmount = getRandomAmount(
+                                                  'SAVINGS',
+                                                );
                                               }
                                             }),
                                             child: Container(
@@ -1725,7 +1864,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                             onTap: () => setState(() {
                                               selectedType = 'DISBURSEMENT';
                                               if (selectedOption == 'Branch') {
-                                                branchAmount = getRandomAmount('DISBURSEMENT');
+                                                branchAmount = getRandomAmount(
+                                                  'DISBURSEMENT',
+                                                );
                                               }
                                             }),
                                             child: Container(
@@ -1823,11 +1964,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                                 _SummaryRow(
                                                   icon: Icons.calendar_today,
                                                   label: 'Date',
-                                                  value: selectedDate == null
-                                                      ? '-'
-                                                      : DateFormat(
-                                                          'MMMM d, yyyy',
-                                                        ).format(selectedDate!),
+                                                  value: DateFormat(
+                                                    'MMMM d, yyyy',
+                                                  ).format(DateTime.now()),
+                                                  iconBg: Color(0xFFB8D53D),
+                                                ),
+                                                _SummaryRow(
+                                                  icon: Icons.access_time,
+                                                  label: 'Time',
+                                                  value: DateFormat(
+                                                    'HH:mm:ss',
+                                                  ).format(_currentTime),
                                                   iconBg: Color(0xFFB8D53D),
                                                 ),
                                                 _SummaryRow(
@@ -1900,11 +2047,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                                 _SummaryRow(
                                                   icon: Icons.calendar_today,
                                                   label: 'Date',
-                                                  value: selectedDate == null
-                                                      ? '-'
-                                                      : DateFormat(
-                                                          'MMMM d, yyyy',
-                                                        ).format(selectedDate!),
+                                                  value: DateFormat(
+                                                    'MMMM d, yyyy',
+                                                  ).format(DateTime.now()),
+                                                  iconBg: Color(0xFFB8D53D),
+                                                ),
+                                                _SummaryRow(
+                                                  icon: Icons.access_time,
+                                                  label: 'Time',
+                                                  value: DateFormat(
+                                                    'HH:mm:ss',
+                                                  ).format(_currentTime),
                                                   iconBg: Color(0xFFB8D53D),
                                                 ),
                                                 _SummaryRow(
@@ -2064,9 +2217,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                           ),
                                           child: Center(
                                             child: Text(
-                                              DateFormat('MMMM yyyy').format(
-                                                selectedDate ?? DateTime.now(),
-                                              ),
+                                              DateFormat(
+                                                'HH:mm:ss',
+                                              ).format(_currentTime),
                                               style: const TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
@@ -2173,7 +2326,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       child: CalendarDatePicker(
         initialDate: selectedDate ?? now,
         firstDate: DateTime(2020),
-        lastDate: DateTime(now.year + 2),
+        lastDate: now, // Only allow past and current dates
         onDateChanged: (picked) {
           setState(() => selectedDate = picked);
         },
@@ -2187,23 +2340,27 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final now = DateTime.now();
     final currentMonth = selectedDate ?? now;
     final firstDayOfMonth = DateTime(currentMonth.year, currentMonth.month, 1);
-    final lastDayOfMonth = DateTime(currentMonth.year, currentMonth.month + 1, 0);
+    final lastDayOfMonth = DateTime(
+      currentMonth.year,
+      currentMonth.month + 1,
+      0,
+    );
     final firstWeekday = firstDayOfMonth.weekday;
     final daysInMonth = lastDayOfMonth.day;
-    
+
     // Generate calendar days
     List<DateTime?> calendarDays = [];
-    
+
     // Add empty days for padding
     for (int i = 1; i < firstWeekday; i++) {
       calendarDays.add(null);
     }
-    
+
     // Add days of the month
     for (int day = 1; day <= daysInMonth; day++) {
       calendarDays.add(DateTime(currentMonth.year, currentMonth.month, day));
     }
-    
+
     return Column(
       children: [
         // Month/Year header with navigation
@@ -2215,7 +2372,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
               IconButton(
                 onPressed: () {
                   setState(() {
-                    selectedDate = DateTime(currentMonth.year, currentMonth.month - 1, 1);
+                    selectedDate = DateTime(
+                      currentMonth.year,
+                      currentMonth.month - 1,
+                      1,
+                    );
                   });
                 },
                 icon: const Icon(Icons.chevron_left, color: Color(0xFF0D5B11)),
@@ -2231,7 +2392,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
               IconButton(
                 onPressed: () {
                   setState(() {
-                    selectedDate = DateTime(currentMonth.year, currentMonth.month + 1, 1);
+                    selectedDate = DateTime(
+                      currentMonth.year,
+                      currentMonth.month + 1,
+                      1,
+                    );
                   });
                 },
                 icon: const Icon(Icons.chevron_right, color: Color(0xFF0D5B11)),
@@ -2239,30 +2404,32 @@ class _ReportsScreenState extends State<ReportsScreen> {
             ],
           ),
         ),
-        
+
         // Weekday headers
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                .map((day) => Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Text(
-                          day,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF0D5B11),
-                          ),
+                .map(
+                  (day) => Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        day,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF0D5B11),
                         ),
                       ),
-                    ))
+                    ),
+                  ),
+                )
                 .toList(),
           ),
         ),
-        
+
         // Calendar grid
         Expanded(
           child: Container(
@@ -2278,30 +2445,38 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 if (day == null) {
                   return Container();
                 }
-                
-                final isSelected = selectedDate != null &&
+
+                final isSelected =
+                    selectedDate != null &&
                     selectedDate!.year == day.year &&
                     selectedDate!.month == day.month &&
                     selectedDate!.day == day.day;
-                
-                final isToday = now.year == day.year &&
+
+                final isToday =
+                    now.year == day.year &&
                     now.month == day.month &&
                     now.day == day.day;
-                
+
+                final isFutureDate = day.isAfter(now);
+
                 return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedDate = day;
-                    });
-                  },
+                  onTap: isFutureDate
+                      ? null
+                      : () {
+                          setState(() {
+                            selectedDate = day;
+                          });
+                        },
                   child: Container(
                     margin: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
-                      color: isSelected 
+                      color: isSelected
                           ? const Color(0xFF0B5E1C)
                           : isToday
-                              ? const Color(0xFFB8D53D).withOpacity(0.3)
-                              : Colors.transparent,
+                          ? const Color(0xFFB8D53D).withOpacity(0.3)
+                          : isFutureDate
+                          ? Colors.grey.withOpacity(0.3)
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(8),
                       border: isToday && !isSelected
                           ? Border.all(color: const Color(0xFFB8D53D), width: 2)
@@ -2312,9 +2487,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         day.day.toString(),
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.normal,
-                          color: isSelected 
+                          fontWeight: isSelected || isToday
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          color: isSelected
                               ? Colors.white
+                              : isFutureDate
+                              ? Colors.grey
                               : const Color(0xFF0D5B11),
                         ),
                       ),
@@ -2332,13 +2511,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
   void _clearFilters() {
     setState(() {
       selectedType = 'Select Type';
-      selectedDate = null;
+      // Don't reset selectedDate - it should always show current date in reports
       searchMemberController.clear();
       amountController.clear();
       selectedMember = null;
       branchAmount = null;
+      // Clear focus from search field
+      searchFocusNode.unfocus();
       if (selectedOption == 'Member') {
         // Only clear member-related fields
+        // Force rebuild of autocomplete to clear the field
+        autocompleteKey = GlobalKey();
       } else if (selectedOption == 'Branch') {
         selectedBranch = 'Select Branch';
         selectedMonth = 'Select Month';
@@ -2352,21 +2535,18 @@ class _ReportsScreenState extends State<ReportsScreen> {
     bool valid = true;
     String errorMsg = '';
     if (selectedOption == 'Member') {
-      if (selectedMember == null ||
-          selectedType == 'Select Type' ||
-          selectedDate == null) {
+      if (selectedMember == null || selectedType == 'Select Type') {
         valid = false;
-        errorMsg = 'Please select a member, type, and date before downloading.';
+        errorMsg = 'Please select a member and type before downloading.';
       }
     } else if (selectedOption == 'Branch') {
       if (selectedBranch == 'Select Branch' ||
           selectedType == 'Select Type' ||
           selectedMonth == 'Select Month' ||
-          selectedYear == 'Select Year' ||
-          selectedDate == null) {
+          selectedYear == 'Select Year') {
         valid = false;
         errorMsg =
-            'Please select a branch, type, month, year, and date before downloading.';
+            'Please select a branch, type, month, and year before downloading.';
       }
     }
     if (!valid) {
