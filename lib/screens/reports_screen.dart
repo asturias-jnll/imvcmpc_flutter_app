@@ -685,9 +685,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                 children: [
                                   Expanded(
                                     child: GestureDetector(
-                                      onTap: () => setState(
-                                        () => selectedType = 'SAVINGS',
-                                      ),
+                                      onTap: () => setState(() {
+                                        selectedType = 'SAVINGS';
+                                        if (selectedOption == 'Branch') {
+                                          branchAmount = getRandomAmount('SAVINGS');
+                                        }
+                                      }),
                                       child: Container(
                                         height: 44,
                                         decoration: BoxDecoration(
@@ -730,9 +733,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: GestureDetector(
-                                      onTap: () => setState(
-                                        () => selectedType = 'DISBURSEMENT',
-                                      ),
+                                      onTap: () => setState(() {
+                                        selectedType = 'DISBURSEMENT';
+                                        if (selectedOption == 'Branch') {
+                                          branchAmount = getRandomAmount('DISBURSEMENT');
+                                        }
+                                      }),
                                       child: Container(
                                         height: 44,
                                         decoration: BoxDecoration(
@@ -1664,9 +1670,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                       children: [
                                         Expanded(
                                           child: GestureDetector(
-                                            onTap: () => setState(
-                                              () => selectedType = 'SAVINGS',
-                                            ),
+                                            onTap: () => setState(() {
+                                              selectedType = 'SAVINGS';
+                                              if (selectedOption == 'Branch') {
+                                                branchAmount = getRandomAmount('SAVINGS');
+                                              }
+                                            }),
                                             child: Container(
                                               height: 44,
                                               decoration: BoxDecoration(
@@ -1713,10 +1722,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                         const SizedBox(width: 8),
                                         Expanded(
                                           child: GestureDetector(
-                                            onTap: () => setState(
-                                              () =>
-                                                  selectedType = 'DISBURSEMENT',
-                                            ),
+                                            onTap: () => setState(() {
+                                              selectedType = 'DISBURSEMENT';
+                                              if (selectedOption == 'Branch') {
+                                                branchAmount = getRandomAmount('DISBURSEMENT');
+                                              }
+                                            }),
                                             child: Container(
                                               height: 44,
                                               decoration: BoxDecoration(
