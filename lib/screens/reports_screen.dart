@@ -52,7 +52,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   String selectedBranch = 'Select Branch';
   String selectedType = 'Select Type';
-  DateTime? selectedDate;
+  DateTime? selectedDate = DateTime.now(); // Default to today's date
   String selectedOption = 'Member'; // Default to Member
   String selectedMonth = 'Select Month';
   String selectedYear = 'Select Year';
@@ -2096,23 +2096,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                                 ), // today border
                                               ),
                                             ),
-                                            child: CalendarDatePicker(
-                                              initialDate:
-                                                  selectedDate ??
-                                                  DateTime.now(),
-                                              firstDate: DateTime(2020),
-                                              lastDate: DateTime(
-                                                DateTime.now().year + 2,
-                                              ),
-                                              onDateChanged: (picked) {
-                                                setState(
-                                                  () => selectedDate = picked,
-                                                );
-                                              },
-                                              currentDate: DateTime.now(),
-                                              selectableDayPredicate: (date) =>
-                                                  true,
-                                            ),
+                                            child: _buildCustomCalendar(),
                                           ),
                                         ),
                                       ],
@@ -2196,6 +2180,152 @@ class _ReportsScreenState extends State<ReportsScreen> {
         currentDate: now,
         selectableDayPredicate: (date) => true,
       ),
+    );
+  }
+
+  Widget _buildCustomCalendar() {
+    final now = DateTime.now();
+    final currentMonth = selectedDate ?? now;
+    final firstDayOfMonth = DateTime(currentMonth.year, currentMonth.month, 1);
+    final lastDayOfMonth = DateTime(currentMonth.year, currentMonth.month + 1, 0);
+    final firstWeekday = firstDayOfMonth.weekday;
+    final daysInMonth = lastDayOfMonth.day;
+    
+    // Generate calendar days
+    List<DateTime?> calendarDays = [];
+    
+    // Add empty days for padding
+    for (int i = 1; i < firstWeekday; i++) {
+      calendarDays.add(null);
+    }
+    
+    // Add days of the month
+    for (int day = 1; day <= daysInMonth; day++) {
+      calendarDays.add(DateTime(currentMonth.year, currentMonth.month, day));
+    }
+    
+    return Column(
+      children: [
+        // Month/Year header with navigation
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    selectedDate = DateTime(currentMonth.year, currentMonth.month - 1, 1);
+                  });
+                },
+                icon: const Icon(Icons.chevron_left, color: Color(0xFF0D5B11)),
+              ),
+              Text(
+                DateFormat('MMMM yyyy').format(currentMonth),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0D5B11),
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    selectedDate = DateTime(currentMonth.year, currentMonth.month + 1, 1);
+                  });
+                },
+                icon: const Icon(Icons.chevron_right, color: Color(0xFF0D5B11)),
+              ),
+            ],
+          ),
+        ),
+        
+        // Weekday headers
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            children: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                .map((day) => Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          day,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF0D5B11),
+                          ),
+                        ),
+                      ),
+                    ))
+                .toList(),
+          ),
+        ),
+        
+        // Calendar grid
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 7,
+                childAspectRatio: 1,
+              ),
+              itemCount: calendarDays.length,
+              itemBuilder: (context, index) {
+                final day = calendarDays[index];
+                if (day == null) {
+                  return Container();
+                }
+                
+                final isSelected = selectedDate != null &&
+                    selectedDate!.year == day.year &&
+                    selectedDate!.month == day.month &&
+                    selectedDate!.day == day.day;
+                
+                final isToday = now.year == day.year &&
+                    now.month == day.month &&
+                    now.day == day.day;
+                
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedDate = day;
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: isSelected 
+                          ? const Color(0xFF0B5E1C)
+                          : isToday
+                              ? const Color(0xFFB8D53D).withOpacity(0.3)
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                      border: isToday && !isSelected
+                          ? Border.all(color: const Color(0xFFB8D53D), width: 2)
+                          : null,
+                    ),
+                    child: Center(
+                      child: Text(
+                        day.day.toString(),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.normal,
+                          color: isSelected 
+                              ? Colors.white
+                              : const Color(0xFF0D5B11),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 
