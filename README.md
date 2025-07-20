@@ -1,28 +1,37 @@
-# Business Analytics-Integrated Financial Management System for IMVCMPC
+# <span style="color: #1a621d;">Business Analytics-Integrated Financial Management System for IMVCMPC</span>
 
 ## 📋 Project Overview
 
-The **Business Analytics-Integrated Financial Management System Ibaan Market Vendors and Community Multi-Purpose Cooperative (IMVCMPC)** is a comprehensive Flutter-based mobile application designed to streamline financial operations across 12 cooperative branches. This system addresses the inefficiencies and inaccuracies in managing savings and disbursement reports by replacing manual processes with an automated, cloud-based solution.
+The **<span style="color: #1a621d;">Business Analytics-Integrated Financial Management System Ibaan Market Vendors and Community Multi-Purpose Cooperative (IMVCMPC)</span>** is a comprehensive Flutter-based mobile application designed to streamline financial operations across 12 cooperative branches. This system addresses the inefficiencies and inaccuracies in managing savings and disbursement reports by replacing manual processes with an automated, cloud-based solution.
 
-### 🎯 Problem Statement
+### <span style="color: #94c14d;">⚠️ Problem Statement</span>
 IMVCMPC faces challenges with:
-- Manual processing delays across 12 branches
-- Data inconsistencies in financial records
-- Limited access to real-time financial insights
-- Inefficient decision-making due to outdated reporting methods
+- <span style="color: #a4d586;">Manual processing delays across 12 branches</span>
+- <span style="color: #a4d586;">Data inconsistencies in financial records</span>
+- <span style="color: #a4d586;">Limited access to real-time financial insights</span>
+- <span style="color: #a4d586;">Inefficient decision-making due to outdated reporting methods</span>
 
-### 🚀 Objectives
-- **Automate Financial Management**: Streamline savings and disbursement tracking
-- **Real-time Analytics**: Provide instant access to key financial metrics
-- **AI-Driven Insights**: Implement prescriptive analytics for optimal resource allocation
-- **Multi-User Access**: Enable secure access for Marketing Clerks, Finance Officers, and IT Heads
+### <span style="color: #94c14d;">📚 Objectives of the Study</span>
+
+#### <span style="color: #1a621d;">🎯 Main Objective</span>
+<span style="color: #a4d586;">To design and develop a cloud-based system with a web-based interface, specifically tailored to the needs of the Ibaan Market Vendors & Community Multi-Purpose Cooperative, or IMVCMPC.</span>
+
+#### <span style="color: #94c14d;">📋 Specific Objectives</span>
+
+**<span style="color: #1a621d;">📌 Specific Objective 1:</span>**
+<span style="color: #a4d586;">To develop a system accessible by the Marketing Clerk.</span>
+
+**<span style="color: #1a621d;">📌 Specific Objective 2:</span>**
+<span style="color: #a4d586;">To generate automated financial reports based on real-time monitoring and processing of savings and disbursements.</span>
+
+**<span style="color: #1a621d;">📌 Specific Objective 3:</span>**
+<span style="color: #a4d586;">To incorporate AI-driven prescriptive analytics using Multi-Criteria Decision Analysis (MCDA).</span>
 
 ## ✨ Key Features
 
 ### 🔐 Authentication & Security
 - Secure login/logout system
 - Role-based access control
-- User session management
 
 ### 👥 Member Management
 - Create and manage member profiles
@@ -46,15 +55,17 @@ IMVCMPC faces challenges with:
 - **Responsive Design**: Optimized for both desktop and mobile devices
 - **Intuitive Navigation**: User-friendly interface with clear workflows
 - **Data Visualization**: Charts, graphs, and interactive elements
-- **Cross-Platform**: Works on Android, iOS, Web, and Desktop
+- **Cross-Platform**: Works on Android, Web, and Desktop
 
 ## 🏗️ System Architecture
 
 ### Technology Stack
 - **Frontend**: Flutter (Dart)
-- **Backend**: None
-- **Database**: None
-- **Analytics**: AI-driven prescriptive analytics
+- **Backend**: None (Frontend-only application)
+- **Database**: Hardcoded data (No external database)
+- **Data Storage**: In-memory data structures (List<Map<String, dynamic>>)
+- **Authentication**: Mock authentication system
+- **Analytics**: AI-driven prescriptive analytics (simulated)
 - **Reporting**: PDF generation and export capabilities
 
 ### Project Structure
@@ -82,16 +93,16 @@ lib/
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
-- Flutter SDK
+- Flutter SDK (version 3.8.1)
 - Dart SDK
-- Android Studio / VS Code
+- VS Code
 - Git
 
 ### Installation Steps
 
 1. **Clone the Repository**
    ```bash
-   git clone [repository-url]
+   git clone https://github.com/asturias-jnll/imvcmpc_flutter_app.git
    cd imvcmpc_flutter
    ```
 
@@ -105,21 +116,11 @@ lib/
    flutter run
    ```
 
-### Building for Production
+### Building for Testing
 
 #### Android APK
 ```bash
-flutter build apk --release
-```
-
-#### iOS
-```bash
-flutter build ios --release
-```
-
-#### Web
-```bash
-flutter build web --release
+flutter build apk
 ```
 
 ## 📱 Usage Guide
@@ -162,9 +163,12 @@ flutter build web --release
 ## 📞 Support
 
 For technical support or questions about the system:
-- **Email**: abionjanuelleasturias07@gmail.com
+- **Email**: 
+  - abionjanuelleasturias07@gmail.com
+  - 22-05633@g.batstate-u.edu.ph
+  - 22-01952@g.batstate-u.edu.ph
 - **Phone**: 09913028095
-- **Documentation**: canva.link
+- **Documentation**: https://acesse.one/10-ABION-PAPIO-SASTADO-IT332-FinalProject
 
 ---
 
