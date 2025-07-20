@@ -168,7 +168,7 @@ For technical support or questions about the system:
   - 22-05633@g.batstate-u.edu.ph
   - 22-01952@g.batstate-u.edu.ph
 - **Phone**: 09913028095
-- **Documentation**: https://acesse.one/10-ABION-PAPIO-SASTADO-IT332-FinalProject
+- **Documentation**: https://www.canva.com/design/DAGttfztHg0/6x6Y_CNs3xtS4vbBUv6FMQ/edit?utm_content=DAGttfztHg0&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 ---
 
