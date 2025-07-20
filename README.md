@@ -1,31 +1,31 @@
-# <span style="color: #1a621d;">Business Analytics-Integrated Financial Management System for IMVCMPC</span>
+# Business Analytics-Integrated Financial Management System for IMVCMPC
 
 ## 📋 Project Overview
 
-The **<span style="color: #1a621d;">Business Analytics-Integrated Financial Management System Ibaan Market Vendors and Community Multi-Purpose Cooperative (IMVCMPC)</span>** is a comprehensive Flutter-based mobile application designed to streamline financial operations across 12 cooperative branches. This system addresses the inefficiencies and inaccuracies in managing savings and disbursement reports by replacing manual processes with an automated, cloud-based solution.
+The **Business Analytics-Integrated Financial Management System Ibaan Market Vendors and Community Multi-Purpose Cooperative (IMVCMPC)** is a comprehensive Flutter-based mobile application designed to streamline financial operations across 12 cooperative branches. This system addresses the inefficiencies and inaccuracies in managing savings and disbursement reports by replacing manual processes with an automated, cloud-based solution.
 
-### <span style="color: #94c14d;">⚠️ Problem Statement</span>
+### ⚠️ Problem Statement
 IMVCMPC faces challenges with:
-- <span style="color: #a4d586;">Manual processing delays across 12 branches</span>
-- <span style="color: #a4d586;">Data inconsistencies in financial records</span>
-- <span style="color: #a4d586;">Limited access to real-time financial insights</span>
-- <span style="color: #a4d586;">Inefficient decision-making due to outdated reporting methods</span>
+- Manual processing delays across 12 branches
+- Data inconsistencies in financial records
+- Limited access to real-time financial insights
+- Inefficient decision-making due to outdated reporting methods
 
-### <span style="color: #94c14d;">📚 Objectives of the Study</span>
+### 📚 Objectives of the Study
 
-#### <span style="color: #1a621d;">🎯 Main Objective</span>
-<span style="color: #a4d586;">To design and develop a cloud-based system with a web-based interface, specifically tailored to the needs of the Ibaan Market Vendors & Community Multi-Purpose Cooperative, or IMVCMPC.</span>
+#### 🎯 Main Objective
+To design and develop a cloud-based system with a web-based interface, specifically tailored to the needs of the Ibaan Market Vendors & Community Multi-Purpose Cooperative, or IMVCMPC.
 
-#### <span style="color: #94c14d;">📋 Specific Objectives</span>
+#### 📋 Specific Objectives
 
-**<span style="color: #1a621d;">📌 Specific Objective 1:</span>**
-<span style="color: #a4d586;">To develop a system accessible by the Marketing Clerk.</span>
+**📌 Specific Objective 1:**
+To develop a system accessible by the Marketing Clerk. 
 
-**<span style="color: #1a621d;">📌 Specific Objective 2:</span>**
-<span style="color: #a4d586;">To generate automated financial reports based on real-time monitoring and processing of savings and disbursements.</span>
+**📌 Specific Objective 2:**
+To generate automated financial reports based on real-time monitoring and processing of savings and disbursements.
 
-**<span style="color: #1a621d;">📌 Specific Objective 3:</span>**
-<span style="color: #a4d586;">To incorporate AI-driven prescriptive analytics using Multi-Criteria Decision Analysis (MCDA).</span>
+**📌 Specific Objective 3:**
+To incorporate AI-driven prescriptive analytics using Multi-Criteria Decision Analysis (MCDA).
 
 ## ✨ Key Features
 
